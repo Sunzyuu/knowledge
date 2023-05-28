@@ -1,9 +1,12 @@
 package com.github.forest.auth;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @Author sunzy
  * @Date 2023/5/28 14:22
  */
+
 public interface TokenManager {
     /**
      * 创建一个token关联上指定用户

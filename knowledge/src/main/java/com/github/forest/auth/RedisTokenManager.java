@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @Author sunzy
  * @Date 2023/5/28 14:23
  */
+@Component
 public class RedisTokenManager implements TokenManager{
     @Autowired
     private StringRedisTemplate redisTemplate;

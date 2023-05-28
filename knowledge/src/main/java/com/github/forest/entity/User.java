@@ -1,9 +1,10 @@
 package com.github.forest.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -82,17 +83,20 @@ public class User implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createdTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date createdTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updatedTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date updatedTime;
 
     /**
      * 最后登录时间
      */
-    private LocalDateTime lastLoginTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date lastLoginTime;
 
     /**
      * 签名
@@ -102,7 +106,8 @@ public class User implements Serializable {
     /**
      * 最后在线时间
      */
-    private LocalDateTime lastOnlineTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date lastOnlineTime;
 
     /**
      * 背景图片

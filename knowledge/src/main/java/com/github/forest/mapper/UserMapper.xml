@@ -27,5 +27,11 @@
     <sql id="Base_Column_List">
         id, account, password, nickname, real_name, sex, avatar_type, avatar_url, email, phone, status, created_time, updated_time, last_login_time, signature, last_online_time, bg_img_url
     </sql>
+    <select id="selectByAccount" resultType="com.github.forest.entity.User">
+        select id, nickname, account, password, status, avatar_type, avatar_url, email from forest_user where (account = #{account} or email = #{account} ) and status = 0
+    </select>
+    <select id="selectUserDTOByAccount" resultType="com.github.forest.dto.UserDTO">
+        select id, nickname, avatar_type, avatar_url, account, signature, bg_img_url from forest_user where account = #{account} and status = 0
+    </select>
 
 </mapper>

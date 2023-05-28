@@ -1,5 +1,7 @@
 package com.github.forest.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class UserExtend implements Serializable {
     /**
      * 用户表主键
      */
+    @TableId(value = "id_user", type = IdType.AUTO)
     private Long idUser;
 
     /**

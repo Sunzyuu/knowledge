@@ -1,7 +1,18 @@
 server:
   port: 8099
 
+
 spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+  profiles:
+    active: dev
   redis:
     host: 127.0.0.1
     port: 6379
@@ -21,24 +32,3 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     resources:
       add-mappings: true
-  mail:
-    host: smtp.qq.com
-    port: 465
-    username: 2632338423@qq.com
-    password: pxegdtfyasuddigi
-
-resource:
-  domain: 127.0.0.1:8099/
-#  mail:
-#    host: smtp.ym.163.com
-#    port: 465
-#    username: service@rymcu.com
-#    password: 4W3tCXdyk0Gm
-
-mybatis-plus:
-  configuration:
-    # 日志打印格式设置
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:com/github/forest/mapper/*.xml
-    #开启下划线转驼峰
-  map-underscore-to-camel-case: true

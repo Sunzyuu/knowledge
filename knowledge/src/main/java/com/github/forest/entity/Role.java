@@ -11,9 +11,11 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Column;
+
 /**
  * <p>
- * 用户 - 标签关联表 
+ * 
  * </p>
  *
  * @author sunzy
@@ -21,8 +23,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("forest_user_tag")
-public class UserTag implements Serializable {
+@TableName("forest_role")
+public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,34 +32,44 @@ public class UserTag implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Long idRole;
 
     /**
-     * 用户 id
+     * 角色名称
      */
-    private Long idUser;
+    @Column(name = "name")
+    private String name;
 
     /**
-     * 标签 id
+     * 拼音码
      */
-    private String idTag;
+    @Column(name = "input_code")
+    private String inputCode;
 
     /**
-     * 0：创建者，1：帖子使用，2：用户自评标签
+     * 权重
      */
-    private String type;
+    @Column(name = "weights")
+    private Integer weights;
+
+    /**
+     * 状态
+     */
+    @Column(name = "status")
+    private String status;
 
     /**
      * 创建时间
      */
+    @Column(name = "created_time")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
 
     /**
      * 更新时间
      */
+    @Column(name = "updated_time")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updatedTime;
-
 
 }
