@@ -1,0 +1,28 @@
+server:
+  port: 8099
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: # redis ??
+    database: 1
+    timeout: 3000
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 500
+        min-idle: 0
+  datasource:
+    url: jdbc:mysql://localhost:3306/forest?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    resources:
+      add-mappings: true
+mybatis-plus:
+  configuration:
+    # 日志打印格式设置
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/github/forest/mapper/*.xml

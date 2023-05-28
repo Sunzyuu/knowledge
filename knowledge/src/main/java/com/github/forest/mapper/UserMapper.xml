@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.User">
+        <id column="id" property="id" />
+        <result column="account" property="account" />
+        <result column="password" property="password" />
+        <result column="nickname" property="nickname" />
+        <result column="real_name" property="realName" />
+        <result column="sex" property="sex" />
+        <result column="avatar_type" property="avatarType" />
+        <result column="avatar_url" property="avatarUrl" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="status" property="status" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="last_login_time" property="lastLoginTime" />
+        <result column="signature" property="signature" />
+        <result column="last_online_time" property="lastOnlineTime" />
+        <result column="bg_img_url" property="bgImgUrl" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account, password, nickname, real_name, sex, avatar_type, avatar_url, email, phone, status, created_time, updated_time, last_login_time, signature, last_online_time, bg_img_url
+    </sql>
+
+</mapper>
