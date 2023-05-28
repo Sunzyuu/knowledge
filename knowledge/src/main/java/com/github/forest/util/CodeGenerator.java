@@ -20,7 +20,10 @@ public class CodeGenerator {
     private static final String DATA_SOURCE_USER_NAME  = "root";
     private static final String DATA_SOURCE_PASSWORD  = "root";
     private static final String[] TABLE_NAMES = new String[]{
-        "forest_user"
+        "forest_user_role",
+        "forest_user_extend",
+        "forest_user_tag",
+        "forest_article"
     };
 
     // TODO 默认生成entity，需要生成DTO修改此变量

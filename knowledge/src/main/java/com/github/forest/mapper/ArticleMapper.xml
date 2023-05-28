@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.ArticleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.Article">
+        <id column="id" property="id" />
+        <result column="article_title" property="articleTitle" />
+        <result column="article_thumbnail_url" property="articleThumbnailUrl" />
+        <result column="article_author_id" property="articleAuthorId" />
+        <result column="article_type" property="articleType" />
+        <result column="article_tags" property="articleTags" />
+        <result column="article_view_count" property="articleViewCount" />
+        <result column="article_preview_content" property="articlePreviewContent" />
+        <result column="article_comment_count" property="articleCommentCount" />
+        <result column="article_permalink" property="articlePermalink" />
+        <result column="article_link" property="articleLink" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="article_perfect" property="articlePerfect" />
+        <result column="article_status" property="articleStatus" />
+        <result column="article_thumbs_up_count" property="articleThumbsUpCount" />
+        <result column="article_sponsor_count" property="articleSponsorCount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, article_title, article_thumbnail_url, article_author_id, article_type, article_tags, article_view_count, article_preview_content, article_comment_count, article_permalink, article_link, created_time, updated_time, article_perfect, article_status, article_thumbs_up_count, article_sponsor_count
+    </sql>
+
+</mapper>

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
-@MapperScan("com.github.forest.mapper")
+@MapperScan(basePackages = {"com.github.forest.mapper"})
 public class KnowledgeApplication {
 
 	public static void main(String[] args) {

@@ -19,12 +19,6 @@ class KnowledgeApplicationTests {
 
 	@Test
 	void contextLoads() {
-
-		User user = new User();
-		user.setId(1111l);
-		user.setRealName("ssss");
-		user.setPassword("1111");
-		userService.save(user);
 		List<User> list = userService.list();
 
 		System.out.println(list);

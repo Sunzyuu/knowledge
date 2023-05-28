@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 用户表  前端控制器
+ * 用户扩展表  前端控制器
  * </p>
  *
  * @author sunzy
  * @since 2023-05-28
  */
 @RestController
-@RequestMapping("/forest-user")
-public class ForestUserController {
+@RequestMapping("/user-extend")
+public class UserExtendController {
 
 }
