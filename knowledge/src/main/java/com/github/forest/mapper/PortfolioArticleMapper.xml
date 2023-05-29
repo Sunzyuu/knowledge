@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.PortfolioArticleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.PortfolioArticle">
+        <id column="id" property="id" />
+        <result column="id_portfolio" property="idPortfolio" />
+        <result column="id_article" property="idArticle" />
+        <result column="sort_no" property="sortNo" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, id_portfolio, id_article, sort_no
+    </sql>
+
+</mapper>

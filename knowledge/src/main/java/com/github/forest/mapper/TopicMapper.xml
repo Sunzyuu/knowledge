@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.TopicMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.Topic">
+        <id column="id" property="id" />
+        <result column="topic_title" property="topicTitle" />
+        <result column="topic_uri" property="topicUri" />
+        <result column="topic_description" property="topicDescription" />
+        <result column="topic_type" property="topicType" />
+        <result column="topic_sort" property="topicSort" />
+        <result column="topic_icon_path" property="topicIconPath" />
+        <result column="topic_nva" property="topicNva" />
+        <result column="topic_tag_count" property="topicTagCount" />
+        <result column="topic_status" property="topicStatus" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="topic_description_html" property="topicDescriptionHtml" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, topic_title, topic_uri, topic_description, topic_type, topic_sort, topic_icon_path, topic_nva, topic_tag_count, topic_status, created_time, updated_time, topic_description_html
+    </sql>
+
+</mapper>

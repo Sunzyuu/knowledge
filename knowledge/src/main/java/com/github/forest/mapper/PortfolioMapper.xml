@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.PortfolioMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.Portfolio">
+        <id column="id" property="id" />
+        <result column="portfolio_head_img_url" property="portfolioHeadImgUrl" />
+        <result column="portfolio_title" property="portfolioTitle" />
+        <result column="portfolio_author_id" property="portfolioAuthorId" />
+        <result column="portfolio_description" property="portfolioDescription" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="portfolio_description_html" property="portfolioDescriptionHtml" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, portfolio_head_img_url, portfolio_title, portfolio_author_id, portfolio_description, created_time, updated_time, portfolio_description_html
+    </sql>
+
+</mapper>

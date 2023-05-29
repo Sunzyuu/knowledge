@@ -291,6 +291,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         Author author = new Author();
         BeanUtils.copyProperties(user, author);
+        author.setIdUser(user.getId());
         return author;
     }
 

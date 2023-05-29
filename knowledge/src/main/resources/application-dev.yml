@@ -23,7 +23,7 @@ spring:
       add-mappings: true
   mail:
     host: smtp.qq.com
-    port: 465
+    port: 587
     username: 2632338423@qq.com
     password: pxegdtfyasuddigi
 

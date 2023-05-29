@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 文章表  前端控制器
+ * 作品集表 前端控制器
  * </p>
  *
  * @author sunzy
- * @since 2023-05-28
+ * @since 2023-05-29
  */
 @RestController
-@RequestMapping("/article")
-public class ArticleController {
+@RequestMapping("/portfolio")
+public class PortfolioController {
 
 }
