@@ -16,5 +16,9 @@
     <sql id="Base_Column_List">
         id_user, github, weibo, weixin, qq, blog
     </sql>
+    <select id="selectUserExtendByAccount" resultMap="BaseResultMap">
+        select vue.* from forest_user_extend vue join forest_user vu on vue.id_user = vu.id
+        where vu.account = #{account} limit 1
+    </select>
 
 </mapper>

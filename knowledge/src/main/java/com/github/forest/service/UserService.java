@@ -1,11 +1,14 @@
 package com.github.forest.service;
 
 import com.github.forest.core.exception.ServiceException;
-import com.github.forest.dto.TokenUser;
-import com.github.forest.dto.UserDTO;
+import com.github.forest.dto.*;
 import com.github.forest.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.forest.entity.UserExtend;
 import org.apache.ibatis.exceptions.TooManyResultsException;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -77,7 +80,131 @@ public interface UserService extends IService<User> {
     boolean updateUserRole(Long idUser, Long idRole) throws ServiceException;
 
 
+    /**
+     * 更新用户状态
+     * @param idUser 用户id
+     * @param status 状态
+     * @return
+     * @throws ServiceException
+     */
+    boolean updateStatus(Long idUser, String status) throws ServiceException;
 
+    /**
+     * 获取用户信息
+     * @param idUser
+     * @return
+     */
+    UserInfoDTO findUserInfo(Long idUser);
+
+
+    /**
+     * 更新用户信息
+     *
+     * @param user
+     * @return
+     * @throws ServiceException
+     */
+    UserInfoDTO updateUserInfo(UserInfoDTO user) throws ServiceException;
+
+    /**
+     * 验证昵称是否重复
+     *
+     * @param idUser
+     * @param nickname
+     * @return
+     */
+    boolean checkNicknameByIdUser(Long idUser, String nickname);
+
+
+
+    /**
+     * 获取用户权限
+     *
+     * @param idUser
+     * @return
+     */
+    Integer findRoleWeightsByUser(Long idUser);
+
+    /**
+     * 查询作者信息
+     *
+     * @param idUser
+     * @return
+     */
+    Author selectAuthor(Long idUser);
+
+    /**
+     * 更新用户扩展信息
+     *
+     * @param userExtend
+     * @return
+     */
+    UserExtend updateUserExtend(UserExtend userExtend) throws ServiceException;
+
+    /**
+     * 获取用户扩展信息
+     *
+     * @param account
+     * @return
+     */
+    UserExtend selectUserExtendByAccount(String account);
+
+    /**
+     * 更换邮箱
+     *
+     * @param changeEmailDTO
+     * @return
+     * @throws ServiceException
+     */
+    boolean updateEmail(ChangeEmailDTO changeEmailDTO) throws ServiceException;
+
+    /**
+     * 更新密码
+     *
+     * @param updatePasswordDTO
+     * @return
+     */
+    boolean updatePassword(UpdatePasswordDTO updatePasswordDTO);
+
+    /**
+     * 查询用户列表
+     *
+     * @param searchDTO
+     * @return
+     */
+    List<UserInfoDTO> findUsers(UserSearchDTO searchDTO);
+
+    /**
+     * 通过邮箱更新用户最后登录时间
+     *
+     * @param account
+     * @return
+     */
+    Integer updateLastOnlineTimeByAccount(String account);
+
+    /**
+     * 查询用户扩展信息
+     *
+     * @param idUser
+     * @return
+     */
+    UserExtend findUserExtendInfo(Long idUser);
+
+    /**
+     * 刷新  token
+     *
+     * @param refreshToken
+     * @return
+     */
+    TokenUser refreshToken(String refreshToken);
+
+    /**
+     * 查询用户权限
+     *
+     * @param user
+     * @return
+     */
+    Set<String> findUserPermissions(User user);
 
 
 

@@ -25,7 +25,7 @@ public class UserExtend implements Serializable {
     /**
      * 用户表主键
      */
-    @TableId(value = "id_user", type = IdType.AUTO)
+    @TableId(value = "id_user")
     private Long idUser;
 
     /**

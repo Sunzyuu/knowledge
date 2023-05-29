@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Role">
-        <id column="id" property="id" />
+        <id column="id" property="idRole" />
         <result column="name" property="name" />
         <result column="input_code" property="inputCode" />
         <result column="status" property="status" />
@@ -17,5 +17,8 @@
     <sql id="Base_Column_List">
         id, name, input_code, status, created_time, updated_time, weights
     </sql>
+    <select id="selectRoleByIdUser" resultMap="BaseResultMap">
+        select sr.* from forest_user_role sur left join forest_role sr on sur.id_role = sr.id where id_user = #{id}
+    </select>
 
 </mapper>
