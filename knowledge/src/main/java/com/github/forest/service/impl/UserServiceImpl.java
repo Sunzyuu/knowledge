@@ -13,6 +13,8 @@ import com.github.forest.entity.Role;
 import com.github.forest.entity.User;
 import com.github.forest.entity.UserExtend;
 import com.github.forest.entity.UserRole;
+import com.github.forest.lucene.model.UserLucene;
+import com.github.forest.lucene.util.UserIndexUtil;
 import com.github.forest.mapper.RoleMapper;
 import com.github.forest.mapper.UserExtendMapper;
 import com.github.forest.mapper.UserMapper;
@@ -111,6 +113,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     userRole.setCreatedTime(new Date());
                     userRoleService.save(userRole);
                     // todo 向Lucene插入用户信息
+                    UserIndexUtil.addIndex(UserLucene.builder()
+                            .idUser(user.getId())
+                            .nickname(user.getNickname())
+                            .signature(user.getSignature())
+                            .build());
 //                    stringRedisTemplate.delete(email);
                     return true;
                 }

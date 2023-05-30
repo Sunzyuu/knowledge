@@ -2,7 +2,9 @@ package com.github.forest.service.impl;
 
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.ArticleSearchDTO;
+import com.github.forest.dto.Author;
 import com.github.forest.entity.Article;
+import com.github.forest.entity.User;
 import com.github.forest.mapper.ArticleMapper;
 import com.github.forest.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -74,9 +76,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public List<ArticleDTO> findArticlesByTopicUri(String name) {
         List<ArticleDTO> list = articleMapper.selectArticlesByTopicUri(name);
         // todo::全文搜索引擎
-//        list.forEach(articleDTO -> genArticle(articleDTO, 0));
+        list.forEach(articleDTO -> genArticle(articleDTO, 0));
         return list;
     }
+
+
 
     @Override
     public List<ArticleDTO> findArticlesByTagName(String name) {
@@ -84,4 +88,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
 
+
+    private ArticleDTO genArticle(ArticleDTO articleDTO, int type) {
+        Integer articleList = 0;
+        Integer articleView = 1;
+        Integer articleEdit = 2;
+
+        return null;
+    }
+
+    private Author genAuthor(ArticleDTO article) {
+        Author author = new Author();
+        User user = userService.getById(article.getArticleAuthorId());
+        author.setUserNickname(article.getArticleAuthorName());
+        author.setUserAvatarURL(article.getArticleAuthorAvatarUrl());
+        author.setIdUser(article.getArticleAuthorId());
+        author.setUserAccount(user.getAccount());
+        return author;
+    }
 }
