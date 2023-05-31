@@ -1,6 +1,8 @@
 package com.github.forest.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.*;
+import java.util.Date;
 
 /**
  * @Author sunzy
@@ -42,5 +44,42 @@ public class Utils {
         }
 
         return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
+    }
+
+
+    public static String getTimeAgo(Date date) {
+
+        String timeAgo;
+
+        Instant instant = date.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+        LocalDate oldLocalDate = localDateTime.toLocalDate();
+
+        LocalDate today = LocalDate.now();
+
+        Period p = Period.between(oldLocalDate, today);
+        if (p.getYears() > 0) {
+            timeAgo = p.getYears() + " 年前 ";
+        } else if (p.getMonths() > 0) {
+            timeAgo = p.getMonths() + " 月前 ";
+        } else if (p.getDays() > 0) {
+            timeAgo = p.getDays() + " 天前 ";
+        } else {
+            long to = System.currentTimeMillis();
+            long from = date.getTime();
+            int hours = (int) ((to - from) / (1000 * 60 * 60));
+            if (hours > 0) {
+                timeAgo = hours + " 小时前 ";
+            } else {
+                int minutes = (int) ((to - from) / (1000 * 60));
+                if (minutes == 0) {
+                    timeAgo = " 刚刚 ";
+                } else {
+                    timeAgo = minutes + " 分钟前 ";
+                }
+            }
+        }
+        return timeAgo;
     }
 }

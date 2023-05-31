@@ -10,6 +10,7 @@ import com.github.forest.dto.TokenUser;
 import com.github.forest.dto.UserRegisterInfoDTO;
 import com.github.forest.entity.User;
 import com.github.forest.service.*;
+import com.github.forest.util.UserUtils;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,6 +117,12 @@ public class CommonApiController {
     @GetMapping("/heartbeat")
     public GlobalResult heartbeat() {
         return GlobalResultGenerator.genSuccessResult("heartbeat");
+    }
+
+    @GetMapping("/gettoken")
+    public String testTokenException() {
+        UserUtils.getTokenUser("");
+        return "success";
     }
 
 

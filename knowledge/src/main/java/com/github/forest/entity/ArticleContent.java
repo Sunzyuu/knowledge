@@ -1,5 +1,6 @@
 package com.github.forest.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class ArticleContent implements Serializable {
     /**
      * 主键
      */
+    @TableId
     private Long idArticle;
 
     /**

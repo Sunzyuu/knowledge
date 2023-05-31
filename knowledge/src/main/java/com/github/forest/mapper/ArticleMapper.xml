@@ -102,5 +102,12 @@
             FIND_IN_SET(#{tagName},art.article_tags) > 0
         order by updated_time desc
     </select>
+    <select id="selectTags" resultMap="ArticleTagDTOResultMap">
+        select vta.id, vta.id_tag, vta.id_article, vt.tag_title, vt.tag_icon_path, vt.tag_uri, vt.tag_description from forest_tag vt join forest_tag_article vta on vt.id = vta.id_tag where vta.id_article = #{idArticle}
+    </select>
+<!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
+<!--        select -->
+<!--    </select>-->
+
 
 </mapper>

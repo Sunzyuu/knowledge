@@ -1,8 +1,10 @@
 package com.github.forest.mapper;
 
 import com.github.forest.dto.ArticleDTO;
+import com.github.forest.dto.ArticleTagDTO;
 import com.github.forest.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.forest.entity.ArticleContent;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -51,6 +53,24 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return
      */
     List<ArticleDTO> selectArticlesByTagName(@Param("tagName") String tagName);
+
+
+    /**
+     * 获取文章标签列表
+     *
+     * @param idArticle
+     * @return
+     */
+    List<ArticleTagDTO> selectTags(@Param("idArticle") Long idArticle);
+
+
+    /**
+     * 获取文章正文内容
+     *
+     * @param idArticle
+     * @return
+     */
+//    ArticleContent selectArticleContent(@Param("idArticle") Long idArticle);
 
 
 }

@@ -1,15 +1,21 @@
 package com.github.forest.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.ArticleSearchDTO;
+import com.github.forest.dto.ArticleTagDTO;
 import com.github.forest.dto.Author;
 import com.github.forest.entity.Article;
+import com.github.forest.entity.ArticleContent;
+import com.github.forest.entity.Tag;
 import com.github.forest.entity.User;
 import com.github.forest.mapper.ArticleMapper;
+import com.github.forest.service.ArticleContentService;
 import com.github.forest.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.forest.service.TagService;
 import com.github.forest.service.UserService;
+import com.github.forest.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +42,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private ArticleContentService articleContentService;
 
     @Value("${resource.domain}")
     private String domain;
@@ -75,7 +84,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public List<ArticleDTO> findArticlesByTopicUri(String name) {
         List<ArticleDTO> list = articleMapper.selectArticlesByTopicUri(name);
-        // todo::全文搜索引擎
         list.forEach(articleDTO -> genArticle(articleDTO, 0));
         return list;
     }
@@ -89,12 +97,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
 
 
-    private ArticleDTO genArticle(ArticleDTO articleDTO, int type) {
+
+
+    /**
+     * 生成文章的静态页面
+     * @param article
+     * @param type
+     * @return
+     */
+    private ArticleDTO genArticle(ArticleDTO article, Integer type) {
         Integer articleList = 0;
         Integer articleView = 1;
         Integer articleEdit = 2;
+        Author author = genAuthor(article);
+        article.setTimeAgo(Utils.getTimeAgo(article.getUpdatedTime()));
+        List<ArticleTagDTO> tags = articleMapper.selectTags(article.getIdArticle());
+        article.setTags(tags);
 
-        return null;
+        if(!type.equals(articleList)) {
+            ArticleContent articleContent = articleContentService.getById(article.getIdArticle());
+            if (type.equals(articleView)) {
+                // todo:: 生成静态的文章页面
+            } else if (type.equals(articleEdit)) {
+                article.setArticleContent(articleContent.getArticleContent());
+            }
+        }
+
+        return article;
     }
 
     private Author genAuthor(ArticleDTO article) {
@@ -105,5 +134,36 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         author.setIdUser(article.getArticleAuthorId());
         author.setUserAccount(user.getAccount());
         return author;
+    }
+
+    private String checkTags(String articleTags) {
+        if(StringUtils.isEmpty(articleTags)) {
+            return  "";
+        }
+        LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(true, Tag::getTagReservation, "1");
+        List<Tag> tags = tagService.list(queryWrapper);
+        if(tags.isEmpty()) {
+            return "";
+        } else {
+            String[] articleTagArr = articleTags.split(",");
+
+            for (Tag tag : tags) {
+                if (StringUtils.isBlank(tag.getTagTitle())) {
+                    continue;
+                }
+
+                for (String articleTag : articleTagArr) {
+                    if(StringUtils.isBlank(articleTag)) {
+                        continue;
+                    }
+                    if(articleTag.equals(tag.getTagTitle())) {
+                        return tag.getTagTitle();
+                    }
+
+                }
+            }
+        }
+        return "";
     }
 }

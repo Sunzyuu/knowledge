@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class RedisTokenManager implements TokenManager{
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -31,7 +31,7 @@ public class RedisTokenManager implements TokenManager{
                 setIssuedAt(new Date()).
                 signWith(SignatureAlgorithm.HS256, JwtConstants.JWT_SECRET).compact();
         // 存储到redis 并设置过期时间为15min
-        redisTemplate.boundValueOps(id).set(token, JwtConstants.TOKEN_EXPIRES_MINUTE, TimeUnit.MINUTES);
+        stringRedisTemplate.boundValueOps(id).set(token, JwtConstants.TOKEN_EXPIRES_MINUTE, TimeUnit.MINUTES);
         return token;
     }
 
@@ -43,11 +43,11 @@ public class RedisTokenManager implements TokenManager{
 
         StringBuilder key = new StringBuilder();
         key.append(JwtConstants.LAST_ONLINE).append(model.getUsername());
-        String result = redisTemplate.boundValueOps(key.toString()).get();
+        String result = stringRedisTemplate.boundValueOps(key.toString()).get();
         if (StringUtils.isBlank(result)) {
             // 更新最后在线时间
             applicationEventPublisher.publishEvent(new AccountEvent(model.getUsername()));
-            redisTemplate.boundValueOps(key.toString()).set(LocalDateTime.now().toString(), JwtConstants.LAST_ONLINE_EXPIRES_MINUTE, TimeUnit.MINUTES);
+            stringRedisTemplate.boundValueOps(key.toString()).set(LocalDateTime.now().toString(), JwtConstants.LAST_ONLINE_EXPIRES_MINUTE, TimeUnit.MINUTES);
         }
         return true;
     }
@@ -60,6 +60,6 @@ public class RedisTokenManager implements TokenManager{
 
     @Override
     public void deleteToken(String account) {
-        redisTemplate.delete(account);
+        stringRedisTemplate.delete(account);
     }
 }
