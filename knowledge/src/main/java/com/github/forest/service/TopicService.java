@@ -1,6 +1,9 @@
 package com.github.forest.service;
 
 import com.github.forest.core.exception.ServiceException;
+import com.github.forest.dto.TagDTO;
+import com.github.forest.dto.admin.TopicTagDTO;
+import com.github.forest.entity.Tag;
 import com.github.forest.entity.Topic;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.forest.mapper.TopicMapper;
@@ -40,6 +43,42 @@ public interface TopicService extends IService<Topic> {
      * @throws ServiceException
      */
     Topic saveTopic(Topic topic) throws ServiceException;
+
+
+    /**
+     * 查询未绑定标签
+     *
+     * @param idTopic
+     * @param tagTitle
+     * @return
+     */
+    List<Tag> findUnbindTagsById(Long idTopic, String tagTitle);
+
+    /**
+     * 绑定标签
+     *
+     * @param topicTag
+     * @return
+     * @throws ServiceException
+     */
+    TopicTagDTO bindTopicTag(TopicTagDTO topicTag) throws ServiceException;
+
+    /**
+     * 取消绑定标签
+     *
+     * @param topicTag
+     * @return
+     * @throws ServiceException
+     */
+    TopicTagDTO unbindTopicTag(TopicTagDTO topicTag) throws ServiceException;
+
+    /**
+     * 获取主题下标签列表
+     *
+     * @param topicUri
+     * @return
+     */
+    List<TagDTO> findTagsByTopicUri(String topicUri);
 
 
 }
