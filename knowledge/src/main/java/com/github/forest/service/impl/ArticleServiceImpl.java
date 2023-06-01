@@ -18,6 +18,7 @@ import com.github.forest.service.UserService;
 import com.github.forest.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,6 +33,7 @@ import java.util.List;
  * @since 2023-05-29
  */
 @Service
+@Lazy
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
 
     @Resource

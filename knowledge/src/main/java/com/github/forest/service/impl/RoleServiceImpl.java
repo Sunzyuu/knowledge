@@ -28,8 +28,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Resource
     private RoleMapper roleMapper;
 
-    @Resource
-    private UserService userService;
 
     @Override
     public List<Role> selectRoleByUser(User sysUser) {

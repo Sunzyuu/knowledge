@@ -29,6 +29,7 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2023-05-28
  */
 @Service
+@Lazy
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Resource

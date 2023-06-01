@@ -37,8 +37,7 @@ public class JavaMailServiceImpl implements JavaMailService {
     private JavaMailSenderImpl mailSender;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private UserService userService;
+
     /**
      * thymeleaf模板引擎
      */

@@ -14,6 +14,7 @@ import com.github.forest.service.TopicService;
 import com.github.forest.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ import java.util.List;
  * @date 2023/5/31 21:41
  */
 @Service
+@Lazy
 public class AdminServiceImpl implements AdminService {
 
     @Resource
