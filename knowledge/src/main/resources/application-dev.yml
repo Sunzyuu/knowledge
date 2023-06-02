@@ -29,8 +29,8 @@ spring:
 
 resource:
   domain: 127.0.0.1:8099/
-  file-path: http://127.0.0.1:8099
-  pic-path: E:\Sunzh\java\maven\knowledge\knowledge\nebula-master\static
+  file-path: http://127.0.0.1:8099  #前端运行的地址
+  pic-path: E:/Sunzh/java/maven/knowledge/knowledge/nebula-master/static  #保存到前端运行环境下
   answer-api-url: https://test.rymcu.com/subject/question
 
 mybatis-plus:

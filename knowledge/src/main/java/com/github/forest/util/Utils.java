@@ -1,5 +1,7 @@
 package com.github.forest.util;
 
+import org.springframework.core.env.Environment;
+
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.util.Date;
@@ -12,6 +14,7 @@ public class Utils {
 
     public static final String UNKOWN = "unknown";
 
+    private static Environment env = SpringContextHolder.getBean(Environment.class);
     /**
      * 生成6位数的随机验证码
      * @return
@@ -81,5 +84,16 @@ public class Utils {
             }
         }
         return timeAgo;
+    }
+
+
+    /**
+     * 获取配置文件内属性
+     *
+     * @param key 键值
+     * @return 属性值
+     */
+    public static String getProperty(String key) {
+        return env.getProperty(key);
     }
 }

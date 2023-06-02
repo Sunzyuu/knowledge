@@ -7,6 +7,8 @@ import com.github.forest.service.FileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * <p>
  * 文件上传记录表 服务实现类
@@ -25,6 +27,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, ForestFile> impleme
         fileLambdaQueryWrapper.eq(true, ForestFile::getCreatedBy, createdBy);
         fileLambdaQueryWrapper.eq(true, ForestFile::getFileType, fileType);
         ForestFile file = getOne(fileLambdaQueryWrapper);
+        if(file == null) {
+            return "";
+        }
         return file.getFileUrl();
     }
 
@@ -37,6 +42,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, ForestFile> impleme
         file.setCreatedBy(createdBy);
         file.setFileSize(fileSize);
         file.setFileType(fileType);
+        file.setCreatedTime(new Date());
+        file.setUpdatedTime(new Date());
         if (!save(file)) {
             return 0;
         }
