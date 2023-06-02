@@ -29,11 +29,9 @@ spring:
 
 resource:
   domain: 127.0.0.1:8099/
-#  mail:
-#    host: smtp.ym.163.com
-#    port: 465
-#    username: service@rymcu.com
-#    password: 4W3tCXdyk0Gm
+  file-path: http://127.0.0.1:8099
+  pic-path: E:\Sunzh\java\maven\knowledge\knowledge\nebula-master\static
+  answer-api-url: https://test.rymcu.com/subject/question
 
 mybatis-plus:
   configuration:
