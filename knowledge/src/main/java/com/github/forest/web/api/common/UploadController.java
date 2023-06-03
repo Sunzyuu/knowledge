@@ -1,5 +1,6 @@
 package com.github.forest.web.api.common;
 
+import com.github.forest.dto.LinkToImageUrlDTO;
 import org.apache.commons.codec.binary.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.github.forest.auth.JwtConstants;
@@ -19,17 +20,19 @@ import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author sunzy
@@ -239,4 +242,96 @@ public class UploadController {
         return GlobalResultGenerator.genSuccessResult(jsonObject);
     }
 
+
+    @PostMapping("/file/link")
+    @Transactional(rollbackFor = Exception.class)
+    public GlobalResult linkToImageUrl(@RequestBody LinkToImageUrlDTO linkToImageUrlDTO, HttpServletRequest request) throws IOException {
+        TokenUser tokenUser = getTokenUser(request);
+        String url = linkToImageUrlDTO.getUrl();
+        HashMap<Object, Object> data = new HashMap<>(2);
+        if (StringUtils.isBlank(url)) {
+            data.put("message", "文件为空!");
+            return GlobalResultGenerator.genSuccessResult(data);
+        }
+        if (url.contains(Utils.getProperty("resource.file-path"))) {
+            data.put("originalURL", url);
+            data.put("url", url);
+            return GlobalResultGenerator.genSuccessResult(data);
+        }
+        URL link = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) link.openConnection();
+        //设置超时间为3秒
+        conn.setConnectTimeout(3 * 1000);
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36");
+        conn.setRequestProperty("referer", "");
+
+        // 得到输入流
+        try (InputStream inputStream = conn.getInputStream()) {
+            //获取自己数组
+            byte[] getData = readInputStream(inputStream);
+            if (getData.length == 0) {
+                data.put("message", "文件为空!");
+                return GlobalResultGenerator.genSuccessResult(data);
+            }
+            // 获取文件md5值
+            String md5 = DigestUtils.md5DigestAsHex(getData);
+            String fileType = "." + MimeTypeUtils.parseMimeType(conn.getContentType()).getSubtype();
+            String fileUrl = fileService.getFileUrlByMd5(md5, tokenUser.getIdUser(), fileType);
+
+            data.put("originalURL", url);
+
+            if (StringUtils.isNotEmpty(fileUrl)) {
+                data.put("url", fileUrl);
+                return GlobalResultGenerator.genSuccessResult(data);
+            }
+
+            Integer type = linkToImageUrlDTO.getType();
+            if (Objects.isNull(type)) {
+                type = 1;
+            }
+            String typePath = getTypePath(type);
+            //图片存储路径
+            String ctxHeadPicPath = env.getProperty("resource.pic-path");
+            String dir = ctxHeadPicPath + "/" + typePath;
+            File file = new File(dir);
+            if (!file.exists()) {
+                file.mkdirs();// 创建文件根目录
+            }
+            String fileName = System.currentTimeMillis() + fileType;
+            fileUrl = Utils.getProperty("resource.file-path") + "/" + typePath + "/" + fileName;
+
+            String savePath = file.getPath() + File.separator + fileName;
+            File saveFile = new File(savePath);
+
+            FileCopyUtils.copy(getData, saveFile);
+            fileService.insertForestFile(fileUrl, savePath, md5, tokenUser.getIdUser(), getData.length, fileType);
+            data.put("originalURL", url);
+            data.put("url", fileUrl);
+            return GlobalResultGenerator.genSuccessResult(data);
+        } catch (IOException e) {
+            log.error("link: {}, \nmessage: {}", url, e.getMessage());
+            data.put("originalURL", url);
+            data.put("url", url);
+            return GlobalResultGenerator.genSuccessResult(data);
+        }
+    }
+
+    /**
+     * 从输入流中获取字节数组
+     *
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
+    public static byte[] readInputStream(InputStream inputStream) throws IOException {
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        while ((len = inputStream.read(buffer)) != -1) {
+            bos.write(buffer, 0, len);
+        }
+        bos.close();
+        return bos.toByteArray();
+    }
 }
