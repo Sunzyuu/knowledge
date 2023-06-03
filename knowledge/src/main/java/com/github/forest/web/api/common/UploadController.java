@@ -1,5 +1,6 @@
 package com.github.forest.web.api.common;
 
+import org.apache.commons.codec.binary.Base64;
 import com.alibaba.fastjson.JSONObject;
 import com.github.forest.auth.JwtConstants;
 import com.github.forest.core.result.GlobalResult;
@@ -70,6 +71,35 @@ public class UploadController {
         }
         return typePath;
     }
+
+
+    public static String uploadBase64File(String fileStr, Integer type) {
+        if(StringUtils.isBlank(fileStr)) {
+            return  "";
+        }
+        String typePath = getTypePath(type);
+        //图片存储路径
+        String ctxHeadPicPath = env.getProperty("resource.pic-path");
+        String dir = ctxHeadPicPath + "/" + typePath;
+        File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();// 创建文件根目录
+        }
+
+
+        String localPath = Utils.getProperty("resource.file-path") + "/" + typePath + "/";
+        String fileName = System.currentTimeMillis() + ".png";
+        String savePath = file.getPath() + File.separator + fileName;
+        File saveFile = new File(savePath);
+        try {
+            FileCopyUtils.copy(Base64.decodeBase64(fileStr.substring(fileStr.indexOf(",") + 1)), saveFile);
+            fileStr = localPath + fileName;
+        } catch (IOException e) {
+            fileStr = "上传失败!";
+        }
+        return fileStr;
+    }
+
 
     @PostMapping("/file")
     @Transactional(rollbackFor = Exception.class)
