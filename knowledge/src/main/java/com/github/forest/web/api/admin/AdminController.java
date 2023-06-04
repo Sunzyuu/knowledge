@@ -5,22 +5,23 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.forest.core.exception.ServiceException;
 import com.github.forest.core.result.GlobalResult;
 import com.github.forest.core.result.GlobalResultGenerator;
+import com.github.forest.dto.TagDTO;
 import com.github.forest.dto.UserInfoDTO;
 import com.github.forest.dto.UserSearchDTO;
+import com.github.forest.dto.admin.TopicTagDTO;
 import com.github.forest.dto.admin.UserRoleDTO;
 import com.github.forest.entity.Role;
 import com.github.forest.entity.Tag;
 import com.github.forest.entity.Topic;
 import com.github.forest.entity.User;
-import com.github.forest.service.AdminService;
-import com.github.forest.service.RoleService;
-import com.github.forest.service.TagService;
-import com.github.forest.service.UserService;
+import com.github.forest.service.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -43,10 +44,9 @@ public class AdminController {
     @Resource
     private TagService tagService;
 
-    @GetMapping("/topics")
-    public GlobalResult<PageInfo<Topic>> topics(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows) {
-        return adminService.getTopics(page, rows);
-    }
+    @Resource
+    private TopicService topicService;
+
 
     @GetMapping("/users")
     public GlobalResult<PageInfo<UserInfoDTO>> users(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows, UserSearchDTO searchDTO) {
@@ -102,6 +102,70 @@ public class AdminController {
     public GlobalResult<Tag> tagDetail(@PathVariable Integer idTag){
         Tag tag = tagService.getById(idTag);
         return GlobalResultGenerator.genSuccessResult(tag);
+    }
+
+    @GetMapping("/topics")
+    public GlobalResult<PageInfo<Topic>> topics(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows) {
+        return adminService.getTopics(page, rows);
+    }
+
+    @GetMapping("/topic/{topicUri")
+    public GlobalResult topic(@PathVariable String topicUri) {
+        if(StringUtils.isBlank(topicUri)){
+            throw new IllegalArgumentException("参数异常");
+        }
+        Topic topic = topicService.findTopicByTopicUri(topicUri);
+        return GlobalResultGenerator.genSuccessResult(topic);
+    }
+
+    @GetMapping("/topic/{topicUri}/tags")
+    public GlobalResult<PageInfo<TagDTO>> topicTags(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows, @PathVariable String topicUri) {
+        if (StringUtils.isBlank(topicUri)) {
+            throw new IllegalArgumentException("参数异常!");
+        }
+        PageHelper.startPage(page, rows);
+        List<TagDTO> list = topicService.findTagsByTopicUri(topicUri);
+        PageInfo<TagDTO> pageInfo = new PageInfo<>(list);
+        return GlobalResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    @GetMapping("/topic/detail/{idTopic")
+    public GlobalResult<Topic> topicDetail(@PathVariable Integer idTopic) {
+        Topic topic = topicService.getById(idTopic);
+        return GlobalResultGenerator.genSuccessResult(topic);
+    }
+
+    @GetMapping("/topic/unbind-topic-tags")
+    public GlobalResult<PageInfo<Tag>> unbindTopicTags(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows, HttpServletRequest request) {
+        Long idTopic = Long.valueOf(request.getParameter("idTopic"));
+        String tagTitle = request.getParameter("tagTitle");
+        PageHelper.startPage(page, rows);
+        List<Tag> list = topicService.findUnbindTagsById(idTopic, tagTitle);
+        PageInfo<Tag> pageInfo = new PageInfo<>(list);
+        return GlobalResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    @PostMapping("/topic/bind-topic-tag")
+    public GlobalResult bindTopicTag(@RequestBody TopicTagDTO topicTag) throws Exception {
+        TopicTagDTO newTopicTagDTO = topicService.bindTopicTag(topicTag);
+        return GlobalResultGenerator.genSuccessResult(newTopicTagDTO);
+    }
+
+    @DeleteMapping("/topic/unbind-topic-tag")
+    public GlobalResult unbindTopicTag(@RequestBody TopicTagDTO topicTag) throws Exception {
+        TopicTagDTO topicTagDTO = topicService.unbindTopicTag(topicTag);
+        return GlobalResultGenerator.genSuccessResult(topicTagDTO);
+    }
+
+    @PostMapping("/topic/post")
+    public GlobalResult<Topic> addTopic(@RequestBody Topic topic) throws ServiceException {
+        Topic newTopic = topicService.saveTopic(topic);
+        return GlobalResultGenerator.genSuccessResult(newTopic);
+    }
+    @PostMapping("/topic/post")
+    public GlobalResult<Topic> updateTopic(@RequestBody Topic topic) throws ServiceException {
+        Topic newTopic = topicService.saveTopic(topic);
+        return GlobalResultGenerator.genSuccessResult(newTopic);
     }
 
 
