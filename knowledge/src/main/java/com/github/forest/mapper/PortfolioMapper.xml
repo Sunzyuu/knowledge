@@ -14,9 +14,47 @@
         <result column="portfolio_description_html" property="portfolioDescriptionHtml" />
     </resultMap>
 
+    <resultMap id="DTOResultMap" type="com.github.forest.dto.PortfolioDTO">
+        <result column="id" property="idPortfolio"></result>
+        <result column="portfolio_head_img_url" property="headImgUrl"></result>
+        <result column="portfolio_title" property="portfolioTitle"></result>
+        <result column="portfolio_author_id" property="portfolioAuthorId"></result>
+        <result column="portfolio_description" property="portfolioDescription"></result>
+        <result column="updated_time" property="updatedTime"></result>
+        <result column="numbers" property="articleNumber"></result>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, portfolio_head_img_url, portfolio_title, portfolio_author_id, portfolio_description, created_time, updated_time, portfolio_description_html
     </sql>
+    <insert id="insertPortfolioArticle">
+        insert into forest_portfolio_article (id_portfolio, id_article, sort_no) values (#{idPortfolio}, #{idArticle}, #{maxSortNo})
+    </insert>
+
+
+    <select id="selectUserPortfoliosByIdUser" resultMap="DTOResultMap">
+        select id, portfolio_head_img_url, portfolio_title, portfolio_author_id, portfolio_description, updated_time from forest_portfolio where portfolio_author_id = #{idUser}
+    </select>
+
+    <select id="selectPortfolioDTOById" resultMap="DTOResultMap">
+        select id, portfolio_head_img_url, portfolio_title, portfolio_author_id,
+        <choose>
+            <when test="type == 1">
+                portfolio_description_html as portfolio_description,
+            </when>
+            <otherwise>
+                portfolio_description,
+            </otherwise>
+        </choose>
+        updated_time from forest_portfolio where id = #{id}
+    </select>
+    <select id="selectCountArticleNumber" resultType="java.lang.Integer">
+        select count(*) from forest_portfolio_article where id_portfolio = #{idPortfolio} and id_article = #{id}
+    </select>
+    <select id="selectCountPortfolioArticle" resultType="java.lang.Integer">
+        select count(*) from forest_portfolio_article where id_portfolio = #{idPortfolio} and id_article = #{id} and id_article = #{idArticle}
+    </select>
+
 
 </mapper>
