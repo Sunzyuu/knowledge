@@ -60,4 +60,41 @@ public interface PortfolioMapper extends BaseMapper<Portfolio> {
      * @return
      */
     Integer insertPortfolioArticle(@Param("idArticle") Long idArticle, @Param("idPortfolio") Long idPortfolio, @Param("maxSortNo") Integer maxSortNo);
+
+
+    /**
+     * 查询作品集下最大排序号
+     *
+     * @param idPortfolio
+     * @return
+     */
+    Integer selectMaxSortNo(@Param("idPortfolio") Long idPortfolio);
+
+    /**
+     * 更新文章排序号
+     *
+     * @param idPortfolio
+     * @param idArticle
+     * @param sortNo
+     * @return
+     */
+    Integer updateArticleSortNo(@Param("idPortfolio") Long idPortfolio, @Param("idArticle") Long idArticle, @Param("sortNo") Integer sortNo);
+
+    /**
+     * 取消绑定文章
+     *
+     * @param idPortfolio
+     * @param idArticle
+     * @return
+     */
+    Integer unbindArticle(@Param("idPortfolio") Long idPortfolio, @Param("idArticle") Long idArticle);
+
+    /**
+     * 获取作品集列表数据
+     *
+     * @return
+     */
+    List<PortfolioDTO> selectPortfolios();
+
+
 }
