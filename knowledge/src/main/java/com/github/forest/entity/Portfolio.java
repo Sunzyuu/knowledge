@@ -29,7 +29,7 @@ public class Portfolio implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Long idPortfolio;
 
     /**
      * 作品集头像
