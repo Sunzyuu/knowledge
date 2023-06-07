@@ -51,4 +51,13 @@ public interface ArticleService extends IService<Article> {
     List<ArticleDTO> findArticlesByTagName(String name);
 
 
+    /**
+     * 查询未绑定作品集的文章
+     * @param idPortfolio
+     * @param searchText
+     * @param idUser
+     * @return
+     */
+    List<ArticleDTO> selectUnbindArticles(Long idPortfolio, String searchText, Long idUser);
+
 }

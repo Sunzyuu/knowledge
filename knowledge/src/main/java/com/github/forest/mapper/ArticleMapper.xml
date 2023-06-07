@@ -4,23 +4,23 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Article">
-        <id column="id" property="id" />
-        <result column="article_title" property="articleTitle" />
-        <result column="article_thumbnail_url" property="articleThumbnailUrl" />
-        <result column="article_author_id" property="articleAuthorId" />
-        <result column="article_type" property="articleType" />
-        <result column="article_tags" property="articleTags" />
-        <result column="article_view_count" property="articleViewCount" />
-        <result column="article_preview_content" property="articlePreviewContent" />
-        <result column="article_comment_count" property="articleCommentCount" />
-        <result column="article_permalink" property="articlePermalink" />
-        <result column="article_link" property="articleLink" />
-        <result column="created_time" property="createdTime" />
-        <result column="updated_time" property="updatedTime" />
-        <result column="article_perfect" property="articlePerfect" />
-        <result column="article_status" property="articleStatus" />
-        <result column="article_thumbs_up_count" property="articleThumbsUpCount" />
-        <result column="article_sponsor_count" property="articleSponsorCount" />
+        <id column="id" property="id"/>
+        <result column="article_title" property="articleTitle"/>
+        <result column="article_thumbnail_url" property="articleThumbnailUrl"/>
+        <result column="article_author_id" property="articleAuthorId"/>
+        <result column="article_type" property="articleType"/>
+        <result column="article_tags" property="articleTags"/>
+        <result column="article_view_count" property="articleViewCount"/>
+        <result column="article_preview_content" property="articlePreviewContent"/>
+        <result column="article_comment_count" property="articleCommentCount"/>
+        <result column="article_permalink" property="articlePermalink"/>
+        <result column="article_link" property="articleLink"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="article_perfect" property="articlePerfect"/>
+        <result column="article_status" property="articleStatus"/>
+        <result column="article_thumbs_up_count" property="articleThumbsUpCount"/>
+        <result column="article_sponsor_count" property="articleSponsorCount"/>
     </resultMap>
 
 
@@ -76,13 +76,26 @@
         id, article_title, article_thumbnail_url, article_author_id, article_type, article_tags, article_view_count, article_preview_content, article_comment_count, article_permalink, article_link, created_time, updated_time, article_perfect, article_status, article_thumbs_up_count, article_sponsor_count
     </sql>
     <select id="selectArticlesByTopicUri" resultMap="DTOResultMap">
-        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id = su.id
-        where art.article_status = 0 and exists(select * from forest_tag_article vta where vta.id_article = art.id and exists(select * from forest_topic_tag vtt
-        join forest_tag vt on vtt.id_tag = vt.id where vt.id = vta.id_tag and exists(select * from forest_topic topic
-        where topic.id = vtt.id_topic and topic.topic_uri = #{topicName}))) order by updated_time desc
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on art.article_author_id = su.id
+        where art.article_status = 0
+          and exists(select *
+                     from forest_tag_article vta
+                     where vta.id_article = art.id
+                       and exists(select *
+                                  from forest_topic_tag vtt
+                                           join forest_tag vt on vtt.id_tag = vt.id
+                                  where vt.id = vta.id_tag
+                                    and exists(select *
+                                               from forest_topic topic
+                                               where topic.id = vtt.id_topic
+                                                 and topic.topic_uri = #{topicName})))
+        order by updated_time desc
     </select>
     <select id="selectArticles" resultMap="DTOResultMap">
-        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id = su.id
+        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id =
+        su.id
         where article_status = 0
         <if test="topicUri != 'news'">
             and FIND_IN_SET('划水',art.article_tags) = 0
@@ -92,22 +105,38 @@
     </select>
 
     <select id="selectArticleDTOById" resultMap="DTOResultMap">
-        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id = su.id where art.id = #{id}
+        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id =
+        su.id where art.id = #{id}
         <if test="type == 1">
             and art.article_status = 0
         </if>
     </select>
     <select id="selectArticlesByTagName" resultMap="DTOResultMap">
-        select art.*,su.nickname,su.avatar_url from forest_article art join forest_user su on art.article_author_id = su.id where
-            FIND_IN_SET(#{tagName},art.article_tags) > 0
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on art.article_author_id = su.id
+        where FIND_IN_SET(#{tagName}, art.article_tags) > 0
         order by updated_time desc
     </select>
     <select id="selectTags" resultMap="ArticleTagDTOResultMap">
-        select vta.id, vta.id_tag, vta.id_article, vt.tag_title, vt.tag_icon_path, vt.tag_uri, vt.tag_description from forest_tag vt join forest_tag_article vta on vt.id = vta.id_tag where vta.id_article = #{idArticle}
+        select vta.id, vta.id_tag, vta.id_article, vt.tag_title, vt.tag_icon_path, vt.tag_uri, vt.tag_description
+        from forest_tag vt
+                 join forest_tag_article vta on vt.id = vta.id_tag
+        where vta.id_article = #{idArticle}
     </select>
-<!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
-<!--        select -->
-<!--    </select>-->
+    <select id="selectUnbindArticlesByIdPortfolio" resultMap="DTOResultMap">
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on su.id = #{idUser} and art.article_author_id = su.id
+        where art.article_author_id = #{idUser}
+          and art.article_status = 0
+          and instr(art.article_title, #{searchText}) > 0
+          and art.id not in (select id_article from forest_portfolio_article where id_portfolio = #{idPortfolio})
+        order by updated_time desc
+    </select>
+    <!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
+    <!--        select -->
+    <!--    </select>-->
 
 
 </mapper>

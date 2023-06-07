@@ -67,10 +67,18 @@ public interface ArticleMapper extends BaseMapper<Article> {
     /**
      * 获取文章正文内容
      *
-     * @param idArticle
+//     * @param idArticle
      * @return
      */
 //    ArticleContent selectArticleContent(@Param("idArticle") Long idArticle);
 
+    /**
+     * 查询未绑定作品集的文章
+     * @param idPortfolio
+     * @param searchText
+     * @param idUser
+     * @return
+     */
+    List<ArticleDTO> selectUnbindArticlesByIdPortfolio(@Param("idPortfolio") Long idPortfolio, @Param("searchText") String searchText, @Param("idUser") Long idUser);
 
 }

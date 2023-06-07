@@ -1,5 +1,7 @@
 package com.github.forest.service.impl;
 
+import com.github.forest.core.exception.BusinessException;
+import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.Author;
 import com.github.forest.dto.PortfolioDTO;
 import com.github.forest.dto.UserDTO;
@@ -13,6 +15,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.forest.service.UserService;
 import com.github.forest.util.XssUtils;
 import com.github.forest.web.api.common.UploadController;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -106,5 +110,30 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
         }
         saveOrUpdate(portfolio);
         return null;
+    }
+
+    /**
+     * 查询用户未绑定作品集的文章
+     * @param page
+     * @param rows
+     * @param searchText
+     * @param idPortfolio
+     * @param idUser
+     * @return
+     */
+    @Override
+    public PageInfo<ArticleDTO> findUnbindArticles(Integer page, Integer rows, String searchText, Long idPortfolio, Long idUser) {
+        Portfolio portfolio = getById(idPortfolio);
+        if (portfolio == null) {
+            throw new BusinessException("该作品集不存在或者已经被删除");
+        } else {
+            if (!idUser.equals(portfolio.getPortfolioAuthorId())) {
+                throw new BusinessException("非法操作！");
+            } else {
+                PageHelper.startPage(page, rows);
+                List<ArticleDTO> list = articleService.selectUnbindArticles(idPortfolio, searchText, idUser);
+                return new PageInfo<>(list);
+            }
+        }
     }
 }

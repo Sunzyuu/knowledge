@@ -1,9 +1,12 @@
 package com.github.forest.service;
 
+import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.PortfolioDTO;
 import com.github.forest.dto.UserDTO;
+import com.github.forest.entity.Article;
 import com.github.forest.entity.Portfolio;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -39,4 +42,6 @@ public interface PortfolioService extends IService<Portfolio> {
      * @return
      */
     Portfolio postPortfolio(Portfolio port);
+
+    PageInfo<ArticleDTO> findUnbindArticles(Integer page, Integer rows, String searchText, Long idPortfolio, Long idUser);
 }

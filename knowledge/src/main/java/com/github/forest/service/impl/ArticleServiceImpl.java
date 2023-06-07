@@ -97,8 +97,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return articleMapper.selectArticlesByTagName(name);
     }
 
-
-
+    @Override
+    public List<ArticleDTO> selectUnbindArticles(Long idPortfolio, String searchText, Long idUser) {
+        List<ArticleDTO> list = articleMapper.selectUnbindArticlesByIdPortfolio(idPortfolio, searchText, idUser);
+        list.forEach(articleDTO -> genArticle(articleDTO, 0));
+        return list;
+    }
 
 
     /**
