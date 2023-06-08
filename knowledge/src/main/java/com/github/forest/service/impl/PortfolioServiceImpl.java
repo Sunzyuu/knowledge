@@ -2,6 +2,7 @@ package com.github.forest.service.impl;
 
 import com.github.forest.core.exception.BusinessException;
 import com.github.forest.core.exception.ServiceException;
+import com.github.forest.core.exception.UltraViresException;
 import com.github.forest.dto.*;
 import com.github.forest.entity.Portfolio;
 import com.github.forest.lucene.model.PortfolioLucene;
@@ -148,5 +149,53 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
             throw new ServiceException("该文章已加入作品集");
         }
         throw new ServiceException("更新失败");
+    }
+
+    @Override
+    public boolean updateArticleSortNo(PortfolioArticleDTO portfolioArticle) throws ServiceException {
+        Integer result = portfolioMapper.updateArticleSortNo(portfolioArticle.getIdPortfolio(), portfolioArticle.getIdArticle(), portfolioArticle.getSortNo());
+        if(result == 0) {
+            throw new ServiceException("操作失败！");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean unbindArticle(Long idPortfolio, Long idArticle) throws ServiceException {
+        Integer result = portfolioMapper.unbindArticle(idPortfolio, idArticle);
+        if(result == 0) {
+            throw new ServiceException("操作失败！");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deletePortfolio(Long idPortfolio, Long idUser, Integer roleWeights) {
+        if(idPortfolio == null || idPortfolio == 0) {
+            throw new IllegalArgumentException("作品集参数异常");
+        }
+        // 鉴权
+        if(roleWeights > 2) {
+            Portfolio portfolio = getById(idPortfolio);
+            if(!idUser.equals(portfolio.getPortfolioAuthorId())) {
+                throw new UltraViresException("非法访问");
+            }
+        }
+        Integer articleNumber = portfolioMapper.selectCountArticleNumber(idPortfolio);
+        if (articleNumber > 0) {
+            throw new BusinessException("该作品集已绑定文章，不允许删除！");
+        } else {
+            boolean result = removeById(idPortfolio);
+            if(!result) {
+                throw new BusinessException("操作失败");
+            }
+            PortfolioIndexUtil.deleteIndex(idPortfolio);
+            return true;
+        }
+    }
+
+    @Override
+    public List<PortfolioDTO> findPortfolios() {
+        return portfolioMapper.selectPortfolios();
     }
 }

@@ -64,4 +64,41 @@ public interface PortfolioService extends IService<Portfolio> {
      * @throws ServiceException
      */
     boolean bindArticle(PortfolioArticleDTO portfolioArticle) throws ServiceException;
+
+    /**
+     * 更新文章排序号
+     *
+     * @param portfolioArticle
+     * @return
+     * @throws ServiceException
+     */
+    boolean updateArticleSortNo(PortfolioArticleDTO portfolioArticle) throws ServiceException;
+
+    /**
+     * 取消绑定文章
+     *
+     * @param idPortfolio
+     * @param idArticle
+     * @return
+     * @throws ServiceException
+     */
+    boolean unbindArticle(Long idPortfolio, Long idArticle) throws ServiceException;
+
+    /**
+     * 删除作品集
+     *
+     * @param idPortfolio
+     * @param idUser
+     * @param roleWeights
+     * @return
+     */
+    boolean deletePortfolio(Long idPortfolio, Long idUser, Integer roleWeights);
+
+
+    /**
+     * 获取作品集列表数据
+     *
+     * @return
+     */
+    List<PortfolioDTO> findPortfolios();
 }
