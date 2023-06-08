@@ -1,6 +1,8 @@
 package com.github.forest.service;
 
+import com.github.forest.core.exception.ServiceException;
 import com.github.forest.dto.ArticleDTO;
+import com.github.forest.dto.PortfolioArticleDTO;
 import com.github.forest.dto.PortfolioDTO;
 import com.github.forest.dto.UserDTO;
 import com.github.forest.entity.Article;
@@ -43,5 +45,23 @@ public interface PortfolioService extends IService<Portfolio> {
      */
     Portfolio postPortfolio(Portfolio port);
 
+    /**
+     * 查询作品集下未绑定文章
+     * @param page
+     * @param rows
+     * @param searchText
+     * @param idPortfolio
+     * @param idUser
+     * @return
+     */
     PageInfo<ArticleDTO> findUnbindArticles(Integer page, Integer rows, String searchText, Long idPortfolio, Long idUser);
+
+    /**
+     * 绑定文章
+     *
+     * @param portfolioArticle
+     * @return
+     * @throws ServiceException
+     */
+    boolean bindArticle(PortfolioArticleDTO portfolioArticle) throws ServiceException;
 }

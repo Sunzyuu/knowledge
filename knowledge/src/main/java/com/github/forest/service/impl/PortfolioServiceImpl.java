@@ -1,10 +1,8 @@
 package com.github.forest.service.impl;
 
 import com.github.forest.core.exception.BusinessException;
-import com.github.forest.dto.ArticleDTO;
-import com.github.forest.dto.Author;
-import com.github.forest.dto.PortfolioDTO;
-import com.github.forest.dto.UserDTO;
+import com.github.forest.core.exception.ServiceException;
+import com.github.forest.dto.*;
 import com.github.forest.entity.Portfolio;
 import com.github.forest.lucene.model.PortfolioLucene;
 import com.github.forest.lucene.util.PortfolioIndexUtil;
@@ -113,7 +111,7 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
     }
 
     /**
-     * 查询用户未绑定作品集的文章
+     * 查询作品集下未绑定文章
      * @param page
      * @param rows
      * @param searchText
@@ -135,5 +133,20 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
                 return new PageInfo<>(list);
             }
         }
+    }
+
+    @Override
+    public boolean bindArticle(PortfolioArticleDTO portfolioArticle) throws ServiceException {
+        Integer count = portfolioMapper.selectCountPortfolioArticle(portfolioArticle.getIdArticle(), portfolioArticle.getIdPortfolio());
+        if(count.equals(0)) {
+            Integer maxSortNo = portfolioMapper.selectMaxSortNo(portfolioArticle.getIdPortfolio());
+            Integer result = portfolioMapper.insertPortfolioArticle(portfolioArticle.getIdArticle(), portfolioArticle.getIdPortfolio(), maxSortNo);
+            if (result != 0) {
+                return true;
+            }
+        } else {
+            throw new ServiceException("该文章已加入作品集");
+        }
+        throw new ServiceException("更新失败");
     }
 }
