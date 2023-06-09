@@ -75,6 +75,18 @@
     <sql id="Base_Column_List">
         id, article_title, article_thumbnail_url, article_author_id, article_type, article_tags, article_view_count, article_preview_content, article_comment_count, article_permalink, article_link, created_time, updated_time, article_perfect, article_status, article_thumbs_up_count, article_sponsor_count
     </sql>
+    <insert id="insertArticleContent">
+        insert into forest_article_content (id_article, article_content, article_content_html, created_time,
+                                            updated_time)
+        values (#{idArticle}, #{articleContent}, #{articleContentHtml}, sysdate(), sysdate())
+    </insert>
+    <update id="updateArticleContent">
+        update forest_article_content
+        set article_content      = #{articleContent},
+            article_content_html = #{articleContentHtml},
+            updated_time         = sysdate()
+        where id_article = #{idArticle}
+    </update>
     <select id="selectArticlesByTopicUri" resultMap="DTOResultMap">
         select art.*, su.nickname, su.avatar_url
         from forest_article art
@@ -134,6 +146,19 @@
           and art.id not in (select id_article from forest_portfolio_article where id_portfolio = #{idPortfolio})
         order by updated_time desc
     </select>
+    <select id="selectArticleContent" resultMap="ArticleContentResultMap">
+        select article_content, article_content_html
+        from forest_article_content
+        where id_article = #{idArticle}
+    </select>
+    <select id="selectUserArticles" resultMap="DTOResultMap">
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on su.id = #{idUser}
+            and art.article_author_id = su.id
+        where article_author_id = #{idUser}
+          and art.article_status = 0
+        order by updated_time desc    </select>
     <!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
     <!--        select -->
     <!--    </select>-->
