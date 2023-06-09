@@ -87,6 +87,14 @@
             updated_time         = sysdate()
         where id_article = #{idArticle}
     </update>
+    <update id="updateArticleViewCount">
+        update forest_article
+        set article_view_count = #{articleViewCount}
+        where id = #{id}
+    </update>
+    <delete id="deleteUnusedArticleTag">
+        delete from forest_tag_article where id = #{idArticleTag}
+    </delete>
     <select id="selectArticlesByTopicUri" resultMap="DTOResultMap">
         select art.*, su.nickname, su.avatar_url
         from forest_article art
@@ -159,6 +167,14 @@
         where article_author_id = #{idUser}
           and art.article_status = 0
         order by updated_time desc    </select>
+    <select id="selectDrafts" resultMap="DTOResultMap">
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on art.article_author_id = su.id
+        where article_status = '1'
+          and art.article_author_id = #{idUser}
+        order by updated_time desc
+    </select>
     <!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
     <!--        select -->
     <!--    </select>-->
