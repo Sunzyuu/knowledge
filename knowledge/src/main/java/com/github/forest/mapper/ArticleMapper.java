@@ -160,7 +160,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     /**
      * 更新文章标签
-     *
+     * 直接调用service的update()方法即可
      * @param idArticle
      * @param tags
      * @return

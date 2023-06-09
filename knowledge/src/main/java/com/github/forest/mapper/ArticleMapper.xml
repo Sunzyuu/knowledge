@@ -92,8 +92,37 @@
         set article_view_count = #{articleViewCount}
         where id = #{id}
     </update>
+    <update id="updateArticleTags">
+        update forest_article
+        set article_tags = #{tags}
+        where id = #{idArticle}
+    </update>
+    <update id="updateArticleLinkAndPreviewContent">
+        update forest_article
+        set article_link            = #{articleLink},
+            article_permalink       = #{articlePermalink},
+            article_preview_content = #{articlePreviewContent}
+        where id = #{idArticle}
+    </update>
+    <update id="updatePerfect">
+        update forest_article
+        set article_perfect = #{articlePerfect}
+        where id = #{idArticle}
+    </update>
     <delete id="deleteUnusedArticleTag">
-        delete from forest_tag_article where id = #{idArticleTag}
+        delete
+        from forest_tag_article
+        where id = #{idArticleTag}
+    </delete>
+    <delete id="deleteLinkedPortfolioData">
+        delete
+        from forest_portfolio_article
+        where id_article = #{id}
+    </delete>
+    <delete id="deleteArticleContent">
+        delete
+        from forest_article_content
+        where id_article = #{idArticle}
     </delete>
     <select id="selectArticlesByTopicUri" resultMap="DTOResultMap">
         select art.*, su.nickname, su.avatar_url
@@ -175,9 +204,39 @@
           and art.article_author_id = #{idUser}
         order by updated_time desc
     </select>
-    <!--    <select id="selectArticleContent" resultType="com.github.forest.entity.ArticleContent">-->
-    <!--        select -->
-    <!--    </select>-->
+    <select id="selectArticlesByIdPortfolio" resultMap="DTOResultMap">
+        select art.*, su.nickname, su.avatar_url, vpa.sort_no
+        from forest_article art
+                 join forest_portfolio_article vpa on vpa.id_article = art.id and vpa.id_portfolio = #{idPortfolio}
+                 join forest_user su on art.article_author_id = su.id
+        where art.article_status = 0
+          and vpa.id_portfolio = #{idPortfolio}
+        order by sort_no
+    </select>
+    <select id="selectPortfolioArticles" resultMap="PortfolioArticleResultMap">
+        select vp.portfolio_title, vp.portfolio_head_img_url, vpa.id_portfolio, vpa.id_article, vpa.sort_no
+        from forest_portfolio vp
+                 join forest_portfolio_article vpa on vp.id = vpa.id_portfolio
+        where vpa.id_article = #{idArticle}    </select>
+    <select id="existsCommentWithPrimaryKey" resultType="java.lang.Boolean">
+        select exists(select * from forest_comment where comment_article_id = #{id})
+    </select>
+    <select id="selectPortfolioArticlesByIdPortfolioAndSortNo" resultMap="DTOResultMap">
+        select va.article_title, va.id, va.article_permalink
+        from forest_portfolio_article vpa
+                 join forest_article va on va.id = vpa.id_article
+        where va.article_status = '0'
+          and id_portfolio = #{idPortfolio}
+        order by sort_no
+    </select>
+    <select id="selectAnnouncements" resultMap="DTOResultMap">
+        select art.*, su.nickname, su.avatar_url
+        from forest_article art
+                 join forest_user su on art.article_author_id = su.id
+        where article_status = 0
+          and FIND_IN_SET('公告', art.article_tags) > 0
+        order by updated_time desc
+    </select>
 
 
 </mapper>
