@@ -17,6 +17,7 @@ import com.github.forest.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.forest.service.TagService;
 import com.github.forest.service.UserService;
+import com.github.forest.util.Html2TextUtil;
 import com.github.forest.util.Utils;
 import com.github.forest.util.XssUtils;
 import org.apache.commons.lang.StringUtils;
@@ -167,11 +168,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
 
         if(StringUtils.isNotBlank(articleContentHtml)) {
-            //todo:: Html2TextUtils
+            //todo::
+            String previewContent = Html2TextUtil.getContent(articleContent);
+            if(previewContent.length() > MAX_PREVIEW) {
+                previewContent = previewContent.substring(0, MAX_PREVIEW);
+            }
+            newArticle.setArticlePreviewContent(previewContent);
         }
         updateById(newArticle);
         // todo:: tagService
-
         // todo:: 事件监听器
 
         return newArticleId;
@@ -216,17 +221,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public String share(Integer id, String account) {
-        return null;
+        Article article = getById(id);
+        return article.getArticlePermalink() + "?s=" + account;
     }
 
     @Override
     public List<ArticleDTO> findDrafts(Long userId) {
-        return null;
+        List<ArticleDTO> list = articleMapper.selectDrafts(userId);
+        list.forEach(articleDTO -> genArticle(articleDTO, 0));
+        return list;
     }
 
     @Override
     public List<ArticleDTO> findArticlesByIdPortfolio(Long idPortfolio) {
-        return null;
+        List<ArticleDTO> list = articleMapper.selectArticlesByIdPortfolio(idPortfolio);
+        list.forEach(articleDTO -> genArticle(articleDTO, 0));
+        return list;
     }
 
 //    @Override
