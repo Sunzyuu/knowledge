@@ -4,7 +4,9 @@ import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.ArticleSearchDTO;
 import com.github.forest.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.forest.entity.User;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -41,7 +43,6 @@ public interface ArticleService extends IService<Article> {
      */
     List<ArticleDTO> findArticlesByTopicUri(String name);
 
-
     /**
      * 查询标签下文章列表
      *
@@ -50,9 +51,66 @@ public interface ArticleService extends IService<Article> {
      */
     List<ArticleDTO> findArticlesByTagName(String name);
 
+    /**
+     * 查询用户文章列表
+     *
+     * @param idUser
+     * @return
+     */
+    List<ArticleDTO> findUserArticlesByIdUser(Long idUser);
 
     /**
-     * 查询未绑定作品集的文章
+     * 新增/更新文章
+     *
+     * @param article
+     * @param user
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    Long postArticle(ArticleDTO article, User user) throws UnsupportedEncodingException;
+
+    /**
+     * 删除文章
+     *
+     * @param id
+     * @return
+     */
+    Integer delete(Long id);
+
+    /**
+     * 增量文章浏览数
+     *
+     * @param id
+     */
+    void incrementArticleViewCount(Long id);
+
+    /**
+     * 获取分享链接数据
+     *
+     * @param id
+     * @param account
+     * @return
+     */
+    String share(Integer id, String account);
+
+    /**
+     * 查询草稿文章类别
+     *
+     * @return
+     */
+    List<ArticleDTO> findDrafts(Long userId);
+
+    /**
+     * 查询作品集下文章
+     *
+     * @param idPortfolio
+     * @return
+     */
+    List<ArticleDTO> findArticlesByIdPortfolio(Long idPortfolio);
+
+    /**
+     * 查询作品集下未绑定文章
+     *
      * @param idPortfolio
      * @param searchText
      * @param idUser
@@ -60,4 +118,30 @@ public interface ArticleService extends IService<Article> {
      */
     List<ArticleDTO> selectUnbindArticles(Long idPortfolio, String searchText, Long idUser);
 
+    /**
+     * 更新文章标签
+     *
+     * @param idArticle
+     * @param tags
+     * @param userId
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    Boolean updateTags(Long idArticle, String tags, Long userId) throws UnsupportedEncodingException;
+
+    /**
+     * 更新文章优选状态
+     *
+     * @param idArticle
+     * @param articlePerfect
+     * @return
+     */
+    Boolean updatePerfect(Long idArticle, String articlePerfect);
+
+    /**
+     * 获取公告列表
+     *
+     * @return
+     */
+    List<ArticleDTO> findAnnouncements();
 }
