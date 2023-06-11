@@ -1,7 +1,10 @@
 package com.github.forest.util;
 
 import com.github.forest.core.constant.NotificationConstant;
+import com.github.forest.dto.ArticleDTO;
+import com.github.forest.dto.Author;
 import com.github.forest.dto.NotificationDTO;
+import com.github.forest.entity.Article;
 import com.github.forest.entity.Notification;
 import com.github.forest.entity.User;
 import com.github.forest.service.ArticleService;
@@ -9,9 +12,11 @@ import com.github.forest.service.JavaMailService;
 import com.github.forest.service.NotificationService;
 import com.github.forest.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author sunzy
@@ -51,12 +56,53 @@ public class NotificationUtils {
             notification = notificationService.findNotification(idUser, dataId, dataType);
             NotificationDTO notificationDTO = genNotification(notification);
             // mailService send notification
+            mailService.sendNotification(notificationDTO);
         }
 
     }
 
     private static NotificationDTO genNotification(Notification notification) {
-        return null;
+        NotificationDTO notificationDTO = new NotificationDTO();
+        BeanUtils.copyProperties(notification, notificationDTO);
+        ArticleDTO article;
+        User user;
+        switch (notification.getDataType()) {
+            case "0":
+                // 系统公告/帖子
+                article = articleService.findArticleDTOById(notification.getDataId(), 0);
+                if (Objects.nonNull(article)) {
+                    notificationDTO.setDataTitle("系统公告");
+                    notificationDTO.setDataUrl(article.getArticlePermalink());
+                    user = userService.getById(article.getArticleAuthorId());
+                    notificationDTO.setAuthor(genAuthor(user));
+                }
+                break;
+            case "1" :
+                // Todo::关注提醒
+            case "2" :
+                // todo::回帖提醒
+            case "4":
+                // 关注文章更新
+                article = articleService.findArticleDTOById(notification.getDataId(), 0);
+                if (Objects.nonNull(article)) {
+                    notificationDTO.setDataTitle("关注通知");
+                    notificationDTO.setDataUrl(article.getArticlePermalink());
+                    user = userService.getById(article.getArticleAuthorId());
+                    notificationDTO.setAuthor(genAuthor(user));
+                }
+                break;
+            default :
+                break;
+        }
+        return notificationDTO;
+    }
+
+    private static Author genAuthor(User user) {
+        Author author = new Author();
+        author.setIdUser(user.getId());
+        author.setUserAvatarURL(user.getAvatarUrl());
+        author.setUserNickname(user.getNickname());
+        return author;
     }
 
 
