@@ -4,7 +4,6 @@ import com.github.forest.core.constant.NotificationConstant;
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.Author;
 import com.github.forest.dto.NotificationDTO;
-import com.github.forest.entity.Article;
 import com.github.forest.entity.Notification;
 import com.github.forest.entity.User;
 import com.github.forest.service.ArticleService;

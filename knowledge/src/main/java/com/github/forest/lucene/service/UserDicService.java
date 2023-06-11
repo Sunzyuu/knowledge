@@ -1,6 +1,7 @@
 package com.github.forest.lucene.service;
 
 import com.github.forest.lucene.model.UserDic;
+import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.util.List;

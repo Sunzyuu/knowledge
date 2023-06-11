@@ -109,7 +109,7 @@ public class AdminController {
         return adminService.getTopics(page, rows);
     }
 
-    @GetMapping("/topic/{topicUri")
+    @GetMapping("/topic/{topicUri}")
     public GlobalResult topic(@PathVariable String topicUri) {
         if(StringUtils.isBlank(topicUri)){
             throw new IllegalArgumentException("参数异常");
@@ -129,7 +129,7 @@ public class AdminController {
         return GlobalResultGenerator.genSuccessResult(pageInfo);
     }
 
-    @GetMapping("/topic/detail/{idTopic")
+    @GetMapping("/topic/detail/{idTopic}")
     public GlobalResult<Topic> topicDetail(@PathVariable Integer idTopic) {
         Topic topic = topicService.getById(idTopic);
         return GlobalResultGenerator.genSuccessResult(topic);
@@ -162,7 +162,7 @@ public class AdminController {
         Topic newTopic = topicService.saveTopic(topic);
         return GlobalResultGenerator.genSuccessResult(newTopic);
     }
-    @PostMapping("/topic/post")
+    @PutMapping("/topic/post")
     public GlobalResult<Topic> updateTopic(@RequestBody Topic topic) throws ServiceException {
         Topic newTopic = topicService.saveTopic(topic);
         return GlobalResultGenerator.genSuccessResult(newTopic);

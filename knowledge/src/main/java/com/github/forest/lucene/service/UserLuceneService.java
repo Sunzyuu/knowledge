@@ -2,6 +2,7 @@ package com.github.forest.lucene.service;
 
 import com.github.forest.dto.UserDTO;
 import com.github.forest.lucene.model.UserLucene;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
