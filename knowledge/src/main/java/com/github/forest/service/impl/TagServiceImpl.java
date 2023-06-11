@@ -2,6 +2,7 @@ package com.github.forest.service.impl;
 
 import com.github.forest.core.exception.BusinessException;
 import com.github.forest.core.exception.ServiceException;
+import com.github.forest.dto.ArticleTagDTO;
 import com.github.forest.entity.Article;
 import com.github.forest.entity.Tag;
 import com.github.forest.mapper.ArticleMapper;
@@ -13,10 +14,12 @@ import com.github.forest.web.api.common.UploadController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -39,11 +42,28 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    @Transactional(rollbackFor = {UnsupportedEncodingException.class})
     public Integer saveTagArticle(Article article, String articleContentHtml, Long userId) throws UnsupportedEncodingException {
-        return null;
+        String articleTags = article.getArticleTags();
+        if(StringUtils.isNotBlank(articleTags)) {
+            String[] tags = articleTags.split(";");
+            List<ArticleTagDTO> articleTagDTOS = articleMapper.selectTags(article.getId());
+            for (int i = 0; i < tags.length; i++) {
+                
+            }
+
+            return 1;
+        } else {
+            if(StringUtils.isNotBlank(articleContentHtml)) {
+                article.setArticleTags("待分类");
+                saveTagArticle(article, articleContentHtml, userId);
+            }
+        }
+        return 0;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Tag saveTag(Tag tag) {
         boolean result;
         tag.setTagDescription(XssUtils.filterHtmlCode(tag.getTagDescription()));

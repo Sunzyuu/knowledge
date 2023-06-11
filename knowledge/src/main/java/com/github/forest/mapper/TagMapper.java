@@ -1,8 +1,11 @@
 package com.github.forest.mapper;
 
+import com.github.forest.dto.LabelModel;
 import com.github.forest.entity.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,4 +43,27 @@ public interface TagMapper extends BaseMapper<Tag> {
      */
     Integer selectCountUserTagById(@Param("idUser") Long idUser, @Param("idTag") Long idTag);
 
+    /**
+     * 插入用户标签信息
+     *
+     * @param idTag
+     * @param idUser
+     * @param type
+     * @return
+     */
+    Integer insertUserTag(@Param("idTag") Long idTag, @Param("idUser") Long idUser, @Param("type") Integer type);
+
+    /**
+     * 删除未使用标签
+     *
+     * @return
+     */
+    Integer deleteUnusedTag();
+
+    /**
+     * 查询标签列表
+     *
+     * @return
+     */
+    List<LabelModel> selectTagLabels();
 }

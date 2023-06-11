@@ -4,22 +4,26 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Tag">
-        <id column="id" property="id" />
-        <result column="tag_title" property="tagTitle" />
-        <result column="tag_icon_path" property="tagIconPath" />
-        <result column="tag_uri" property="tagUri" />
-        <result column="tag_description" property="tagDescription" />
-        <result column="tag_view_count" property="tagViewCount" />
-        <result column="tag_article_count" property="tagArticleCount" />
-        <result column="tag_ad" property="tagAd" />
-        <result column="tag_show_side_ad" property="tagShowSideAd" />
-        <result column="created_time" property="createdTime" />
-        <result column="updated_time" property="updatedTime" />
-        <result column="tag_status" property="tagStatus" />
-        <result column="tag_reservation" property="tagReservation" />
-        <result column="tag_description_html" property="tagDescriptionHtml" />
+        <id column="id" property="id"/>
+        <result column="tag_title" property="tagTitle"/>
+        <result column="tag_icon_path" property="tagIconPath"/>
+        <result column="tag_uri" property="tagUri"/>
+        <result column="tag_description" property="tagDescription"/>
+        <result column="tag_view_count" property="tagViewCount"/>
+        <result column="tag_article_count" property="tagArticleCount"/>
+        <result column="tag_ad" property="tagAd"/>
+        <result column="tag_show_side_ad" property="tagShowSideAd"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="tag_status" property="tagStatus"/>
+        <result column="tag_reservation" property="tagReservation"/>
+        <result column="tag_description_html" property="tagDescriptionHtml"/>
     </resultMap>
 
+    <resultMap id="TagLabelResultMap" type="com.github.forest.dto.LabelModel">
+        <result column="tag_title" property="label"></result>
+        <result column="tag_title" property="value"></result>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, tag_title, tag_icon_path, tag_uri, tag_description, tag_view_count, tag_article_count, tag_ad, tag_show_side_ad, created_time, updated_time, tag_status, tag_reservation, tag_description_html
@@ -28,6 +32,20 @@
         insert into forest_tag_article (id_tag, id_article, created_time, updated_time)
         values (#{idTag}, #{idArticle}, sysdate(), sysdate())
     </insert>
+    <insert id="insertUserTag">
+        insert into forest_user_tag (id_tag, id_user, type, created_time, updated_time)
+        values (#{idTag}, #{idUser}, #{type}, sysdate(), sysdate())
+    </insert>
+    <delete id="deleteUnusedTag">
+        delete
+        from forest_tag
+        where tag_reservation = 0
+          and id not in (select *
+                         from (select id_tag
+                               from forest_tag_article vta
+                                        left join forest_article va on vta.id_article = va.id
+                               where va.id is not null) tmp);
+    </delete>
     <select id="selectCountTagArticleById" resultType="java.lang.Integer">
         select count(*)
         from forest_tag_article
@@ -39,6 +57,11 @@
         from forest_user_tag
         where id_tag = #{idTag}
           and id_user = #{idUser}
+    </select>
+    <select id="selectTagLabels" resultMap="TagLabelResultMap">
+        select tag_title
+        from forest_tag
+        where tag_status = 0
     </select>
 
 </mapper>
