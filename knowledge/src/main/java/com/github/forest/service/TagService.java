@@ -1,10 +1,12 @@
 package com.github.forest.service;
 
+import com.github.forest.dto.LabelModel;
 import com.github.forest.entity.Article;
 import com.github.forest.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * <p>
@@ -29,5 +31,18 @@ public interface TagService extends IService<Tag> {
      */
     Integer saveTagArticle(Article article, String articleContentHtml, Long userId) throws UnsupportedEncodingException;
 
+
+    /**
+     * 查找tag
+     * @return
+     */
+    List<LabelModel> findTagLabels();
+
+    /**
+     * 清除未使用标签
+     *
+     * @return
+     */
+    boolean cleanUnusedTag();
 
 }

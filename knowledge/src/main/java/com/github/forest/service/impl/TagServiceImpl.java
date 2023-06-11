@@ -1,8 +1,10 @@
 package com.github.forest.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.forest.core.exception.BusinessException;
 import com.github.forest.core.exception.ServiceException;
 import com.github.forest.dto.ArticleTagDTO;
+import com.github.forest.dto.LabelModel;
 import com.github.forest.entity.Article;
 import com.github.forest.entity.Tag;
 import com.github.forest.mapper.ArticleMapper;
@@ -42,6 +44,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    public boolean cleanUnusedTag() {
+        return tagMapper.deleteUnusedTag() > 0;
+    }
+
+    @Override
     @Transactional(rollbackFor = {UnsupportedEncodingException.class})
     public Integer saveTagArticle(Article article, String articleContentHtml, Long userId) throws UnsupportedEncodingException {
         String articleTags = article.getArticleTags();
@@ -49,7 +56,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
             String[] tags = articleTags.split(";");
             List<ArticleTagDTO> articleTagDTOS = articleMapper.selectTags(article.getId());
             for (int i = 0; i < tags.length; i++) {
-                
+
             }
 
             return 1;
@@ -60,6 +67,18 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
             }
         }
         return 0;
+    }
+
+    @Override
+    public List<LabelModel> findTagLabels() {
+        String tags = stringRedisTemplate.opsForValue().get("tags");
+        if(StringUtils.isNotBlank(tags)) {
+            return JSONObject.parseArray(tags, LabelModel.class);
+        } else {
+            List<LabelModel> labelModels = tagMapper.selectTagLabels();
+            stringRedisTemplate.opsForValue().set("tags", JSONObject.toJSONString(labelModels));
+            return labelModels;
+        }
     }
 
     @Override
