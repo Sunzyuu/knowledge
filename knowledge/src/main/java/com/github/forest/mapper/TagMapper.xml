@@ -24,5 +24,21 @@
     <sql id="Base_Column_List">
         id, tag_title, tag_icon_path, tag_uri, tag_description, tag_view_count, tag_article_count, tag_ad, tag_show_side_ad, created_time, updated_time, tag_status, tag_reservation, tag_description_html
     </sql>
+    <insert id="insertTagArticle">
+        insert into forest_tag_article (id_tag, id_article, created_time, updated_time)
+        values (#{idTag}, #{idArticle}, sysdate(), sysdate())
+    </insert>
+    <select id="selectCountTagArticleById" resultType="java.lang.Integer">
+        select count(*)
+        from forest_tag_article
+        where id_tag = #{idTag}
+          and id_article = #{idArticle}
+    </select>
+    <select id="selectCountUserTagById" resultType="java.lang.Integer">
+        select count(*)
+        from forest_user_tag
+        where id_tag = #{idTag}
+          and id_user = #{idUser}
+    </select>
 
 </mapper>

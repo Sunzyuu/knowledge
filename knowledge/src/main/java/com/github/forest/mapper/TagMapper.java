@@ -2,6 +2,7 @@ package com.github.forest.mapper;
 
 import com.github.forest.entity.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -12,5 +13,31 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2023-05-29
  */
 public interface TagMapper extends BaseMapper<Tag> {
+    /**
+     * 插入标签文章表(forest_tag_article)相关信息
+     *
+     * @param idTag
+     * @param idArticle
+     * @return
+     */
+    Integer insertTagArticle(@Param("idTag") Long idTag, @Param("idArticle") Long idArticle);
+
+    /**
+     * 统计标签使用数(文章)
+     *
+     * @param idTag
+     * @param idArticle
+     * @return
+     */
+    Integer selectCountTagArticleById(@Param("idTag") Long idTag, @Param("idArticle") Long idArticle);
+
+    /**
+     * 获取用户标签数
+     *
+     * @param idUser
+     * @param idTag
+     * @return
+     */
+    Integer selectCountUserTagById(@Param("idUser") Long idUser, @Param("idTag") Long idTag);
 
 }
