@@ -2,6 +2,7 @@ package com.github.forest.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.forest.core.exception.BusinessException;
+import com.github.forest.core.exception.ContentNotExistException;
 import com.github.forest.core.exception.UltraViresException;
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.ArticleSearchDTO;
@@ -31,6 +32,7 @@ import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -168,15 +170,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
 
         if(StringUtils.isNotBlank(articleContentHtml)) {
-            //todo::
             String previewContent = Html2TextUtil.getContent(articleContent);
+            // 生成200字的预览信息
             if(previewContent.length() > MAX_PREVIEW) {
                 previewContent = previewContent.substring(0, MAX_PREVIEW);
             }
             newArticle.setArticlePreviewContent(previewContent);
         }
         updateById(newArticle);
-        // todo:: tagService
+        // 插入标签信息
+        tagService.saveTagArticle(newArticle, articleContentHtml, user.getId());
         // todo:: 事件监听器
 
         return newArticleId;
@@ -253,17 +256,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public Boolean updateTags(Long idArticle, String tags, Long userId) throws UnsupportedEncodingException {
+        Article article = getById(idArticle);
+        if(Objects.isNull(article)) {
+            throw new ContentNotExistException("更新失败，文章不存在");
+        }
+        article.setArticleTags(tags);
+//        articleMapper.updateArticleTags(idArticle, tags);
+        updateById(article);
+        tagService.saveTagArticle(article, "", userId);
         return null;
     }
 
     @Override
     public Boolean updatePerfect(Long idArticle, String articlePerfect) {
-        return null;
+        if(articleMapper.updatePerfect(idArticle,articlePerfect) == 0) {
+            throw new ContentNotExistException("设置为优选文章失败");
+        }
+        return true;
     }
 
     @Override
     public List<ArticleDTO> findAnnouncements() {
-        return null;
+        List<ArticleDTO> list = articleMapper.selectAnnouncements();
+        list.forEach(articleDTO -> genArticle(articleDTO, 0));
+        return list;
     }
 
 

@@ -73,6 +73,9 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
                     addTagUser = true;
                 } else {
                     int n = articleTagDTOList.size();
+//                    for (ArticleTagDTO articleTagDTO : articleTagDTOList) {
+//
+//                    }
                     for (int m = 0; m < n; m++) {
                         ArticleTagDTO articleTag = articleTagDTOList.get(m);
                         if (articleTag.getIdTag().toString().equals(tag.getId().toString())) {
@@ -80,7 +83,6 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
                             m--;
                             n--;
                         }
-
                         Integer count = tagMapper.selectCountTagArticleById(tag.getId(), article.getId());
                         if (count == 0) {
                             tag.setTagArticleCount(tag.getTagArticleCount() + 1);
