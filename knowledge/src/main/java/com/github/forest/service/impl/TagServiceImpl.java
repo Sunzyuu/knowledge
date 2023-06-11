@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -54,9 +55,53 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         String articleTags = article.getArticleTags();
         if(StringUtils.isNotBlank(articleTags)) {
             String[] tags = articleTags.split(";");
-            List<ArticleTagDTO> articleTagDTOS = articleMapper.selectTags(article.getId());
+            List<ArticleTagDTO> articleTagDTOList = articleMapper.selectTags(article.getId());
             for (int i = 0; i < tags.length; i++) {
+                boolean addTagArticle = false;
+                boolean addTagUser = false;
+                Tag tag = query().eq("tag_title", tags[i]).one();
+                if(tag == null) {
+                    tag = new Tag();
 
+                    tag.setTagTitle(tags[i]);
+                    tag.setTagUri(URLEncoder.encode(tag.getTagTitle(), "UTF-8"));
+                    tag.setCreatedTime(new Date());
+                    tag.setUpdatedTime(tag.getCreatedTime());
+                    tag.setTagArticleCount(1);
+                    save(tag);
+                    addTagArticle = true;
+                    addTagUser = true;
+                } else {
+                    int n = articleTagDTOList.size();
+                    for (int m = 0; m < n; m++) {
+                        ArticleTagDTO articleTag = articleTagDTOList.get(m);
+                        if (articleTag.getIdTag().toString().equals(tag.getId().toString())) {
+                            articleTagDTOList.remove(articleTag);
+                            m--;
+                            n--;
+                        }
+
+                        Integer count = tagMapper.selectCountTagArticleById(tag.getId(), article.getId());
+                        if (count == 0) {
+                            tag.setTagArticleCount(tag.getTagArticleCount() + 1);
+                            updateById(tag);
+                            addTagArticle = true;
+                        }
+                        Integer countUserTag = tagMapper.selectCountUserTagById(userId, tag.getId());
+                        if (countUserTag == 0) {
+                            addTagUser = true;
+                        }
+                        articleTagDTOList.forEach(articleTagDTO -> {
+                            articleMapper.deleteUnusedArticleTag(articleTagDTO.getIdArticleTag());
+                        });
+                        if (addTagArticle) {
+                            tagMapper.insertTagArticle(tag.getId(), article.getId());
+                        }
+                        if (addTagUser) {
+                            tagMapper.insertUserTag(tag.getId(), userId, 1);
+                        }
+                    }
+                }
             }
 
             return 1;
