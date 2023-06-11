@@ -87,20 +87,20 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
                             updateById(tag);
                             addTagArticle = true;
                         }
-                        Integer countUserTag = tagMapper.selectCountUserTagById(userId, tag.getId());
-                        if (countUserTag == 0) {
-                            addTagUser = true;
-                        }
-                        articleTagDTOList.forEach(articleTagDTO -> {
-                            articleMapper.deleteUnusedArticleTag(articleTagDTO.getIdArticleTag());
-                        });
-                        if (addTagArticle) {
-                            tagMapper.insertTagArticle(tag.getId(), article.getId());
-                        }
-                        if (addTagUser) {
-                            tagMapper.insertUserTag(tag.getId(), userId, 1);
-                        }
                     }
+                }
+                Integer countUserTag = tagMapper.selectCountUserTagById(userId, tag.getId());
+                if (countUserTag == 0) {
+                    addTagUser = true;
+                }
+                articleTagDTOList.forEach(articleTagDTO -> {
+                    articleMapper.deleteUnusedArticleTag(articleTagDTO.getIdArticleTag());
+                });
+                if (addTagArticle) {
+                    tagMapper.insertTagArticle(tag.getId(), article.getId());
+                }
+                if (addTagUser) {
+                    tagMapper.insertUserTag(tag.getId(), userId, 1);
                 }
             }
 
