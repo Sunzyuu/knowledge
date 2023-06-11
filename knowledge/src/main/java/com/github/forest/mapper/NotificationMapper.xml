@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.NotificationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.Notification">
+        <id column="id" property="id" />
+        <result column="id_user" property="idUser" />
+        <result column="data_type" property="dataType" />
+        <result column="data_id" property="dataId" />
+        <result column="has_read" property="hasRead" />
+        <result column="data_summary" property="dataSummary" />
+        <result column="created_time" property="createdTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, id_user, data_type, data_id, has_read, data_summary, created_time
+    </sql>
+
+</mapper>
