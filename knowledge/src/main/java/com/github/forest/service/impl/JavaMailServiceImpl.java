@@ -1,5 +1,8 @@
 package com.github.forest.service.impl;
 
+import com.github.forest.core.constant.NotificationConstant;
+import com.github.forest.dto.NotificationDTO;
+import com.github.forest.entity.User;
 import com.github.forest.service.JavaMailService;
 import com.github.forest.service.UserService;
 import com.github.forest.util.PasswordEncoder;
@@ -38,6 +41,9 @@ public class JavaMailServiceImpl implements JavaMailService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private UserService userService;
+
     /**
      * thymeleaf模板引擎
      */
@@ -73,6 +79,43 @@ public class JavaMailServiceImpl implements JavaMailService {
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Integer sendNotification(NotificationDTO notification) throws MessagingException {
+        Properties props = new Properties();
+        // 表示SMTP发送邮件，需要进行身份验证
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.ssl.enable", true);
+        props.put("mail.smtp.host", SERVER_HOST);
+        props.put("mail.smtp.port", SERVER_PORT);
+        // 如果使用ssl，则去掉使用25端口的配置，进行如下配置,
+        props.put("mail.smtp.socketFactory.class", "com.rymcu.forest.util.MailSSLSocketFactory");
+        props.put("mail.smtp.socketFactory.port", SERVER_PORT);
+        // 发件人的账号，填写控制台配置的发信地址,比如xxx@xxx.com
+        props.put("mail.user", USERNAME);
+        // 访问SMTP服务时需要提供的密码(在控制台选择发信地址进行设置)
+        props.put("mail.password", PASSWORD);
+        mailSender.setJavaMailProperties(props);
+        User user = userService.getById(notification.getIdUser());
+        if (NotificationConstant.Comment.equals(notification.getDataType())) {
+            String url = notification.getDataUrl();
+            String thymeleafTemplatePath = "mail/commentNotification";
+            Map<String, Object> thymeleafTemplateVariable = new HashMap<String, Object>(4);
+            thymeleafTemplateVariable.put("user", notification.getAuthor().getUserNickname());
+            thymeleafTemplateVariable.put("articleTitle", notification.getDataTitle());
+            thymeleafTemplateVariable.put("content", notification.getDataSummary());
+            thymeleafTemplateVariable.put("url", url);
+            sendTemplateEmail(USERNAME,
+                    new String[]{user.getEmail()},
+                    new String[]{},
+                    "【RYMCU】 消息通知",
+                    thymeleafTemplatePath,
+                    thymeleafTemplateVariable);
+            return 1;
+        }
+
+        return 0;
     }
 
 

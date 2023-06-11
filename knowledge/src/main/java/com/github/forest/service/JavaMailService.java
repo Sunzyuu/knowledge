@@ -1,5 +1,7 @@
 package com.github.forest.service;
 
+import com.github.forest.dto.NotificationDTO;
+
 import javax.mail.MessagingException;
 
 /**
@@ -24,4 +26,13 @@ public interface JavaMailService {
      * @throws MessagingException
      */
     Integer sendForgetPasswordEmail(String email) throws MessagingException;
+
+    /**
+     * 发送下消息通知
+     *
+     * @param notification
+     * @return
+     * @throws MessagingException
+     */
+    Integer sendNotification(NotificationDTO notification) throws MessagingException;
 }
