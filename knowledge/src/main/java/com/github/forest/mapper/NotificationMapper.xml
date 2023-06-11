@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Notification">
-        <id column="id" property="id" />
+        <id column="id" property="idNotification" />
         <result column="id_user" property="idUser" />
         <result column="data_type" property="dataType" />
         <result column="data_id" property="dataId" />
@@ -13,9 +13,32 @@
         <result column="created_time" property="createdTime" />
     </resultMap>
 
+    <resultMap id="DTOResultMapper" type="com.github.forest.dto.NotificationDTO">
+        <id column="id" property="idNotification"></id>
+        <result column="id_user" property="idUser"></result>
+        <result column="data_type" property="dataType"></result>
+        <result column="data_id" property="dataId"></result>
+        <result column="data_summary" property="dataSummary"></result>
+        <result column="has_read" property="hasRead"></result>
+        <result column="created_time" property="createdTime"></result>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, id_user, data_type, data_id, has_read, data_summary, created_time
     </sql>
+    <update id="readAllNotification">
+        update forest_notification set has_read = '1' where id_user = #{idUser} and has_read = '0'
+    </update>
+    <select id="selectUnreadNotifications" resultMap="BaseResultMap">
+        select * from forest_notification where has_read = '0' and id_user = #{idUser} order by created_time desc
+    </select>
+    <select id="selectNotifications" resultMap="DTOResultMapper">
+        select * from forest_notification where id_user = #{idUser} order by has_read,created_time desc
+    </select>
+    <select id="selectNotification" resultMap="DTOResultMapper">
+        select * from forest_notification where id_user = #{idUser} and data_id = #{dataId} and data_type = #{dataType}
+    </select>
+
 
 </mapper>

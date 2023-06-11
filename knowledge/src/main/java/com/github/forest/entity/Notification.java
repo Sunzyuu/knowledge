@@ -27,7 +27,7 @@ public class Notification implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Long idNotification;
 
     /**
      * 用户id
