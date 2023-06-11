@@ -49,4 +49,13 @@ public interface NotificationMapper extends BaseMapper<Notification> {
      * @return
      */
     Integer readAllNotification(@Param("idUser") Long idUser);
+
+    /**
+     * 删除相关未读消息
+     *
+     * @param dataId
+     * @param dataType
+     * @return
+     */
+    Integer deleteUnreadNotification(Long dataId, String dataType);
 }

@@ -4,13 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Notification">
-        <id column="id" property="idNotification" />
-        <result column="id_user" property="idUser" />
-        <result column="data_type" property="dataType" />
-        <result column="data_id" property="dataId" />
-        <result column="has_read" property="hasRead" />
-        <result column="data_summary" property="dataSummary" />
-        <result column="created_time" property="createdTime" />
+        <id column="id" property="idNotification"/>
+        <result column="id_user" property="idUser"/>
+        <result column="data_type" property="dataType"/>
+        <result column="data_id" property="dataId"/>
+        <result column="has_read" property="hasRead"/>
+        <result column="data_summary" property="dataSummary"/>
+        <result column="created_time" property="createdTime"/>
     </resultMap>
 
     <resultMap id="DTOResultMapper" type="com.github.forest.dto.NotificationDTO">
@@ -28,16 +28,37 @@
         id, id_user, data_type, data_id, has_read, data_summary, created_time
     </sql>
     <update id="readAllNotification">
-        update forest_notification set has_read = '1' where id_user = #{idUser} and has_read = '0'
+        update forest_notification
+        set has_read = '1'
+        where id_user = #{idUser}
+          and has_read = '0'
     </update>
+    <delete id="deleteUnreadNotification">
+        delete
+        from forest_notification
+        where has_read = '0'
+          and data_id = #{dataId}
+          and data_type = #{dataType}
+    </delete>
     <select id="selectUnreadNotifications" resultMap="BaseResultMap">
-        select * from forest_notification where has_read = '0' and id_user = #{idUser} order by created_time desc
+        select *
+        from forest_notification
+        where has_read = '0'
+          and id_user = #{idUser}
+        order by created_time desc
     </select>
     <select id="selectNotifications" resultMap="DTOResultMapper">
-        select * from forest_notification where id_user = #{idUser} order by has_read,created_time desc
+        select *
+        from forest_notification
+        where id_user = #{idUser}
+        order by has_read, created_time desc
     </select>
     <select id="selectNotification" resultMap="DTOResultMapper">
-        select * from forest_notification where id_user = #{idUser} and data_id = #{dataId} and data_type = #{dataType}
+        select *
+        from forest_notification
+        where id_user = #{idUser}
+          and data_id = #{dataId}
+          and data_type = #{dataType}
     </select>
 
 
