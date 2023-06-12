@@ -24,6 +24,7 @@ import com.github.forest.service.UserRoleService;
 import com.github.forest.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.forest.util.PasswordEncoder;
+import com.github.forest.web.api.common.UploadController;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.shiro.authc.AccountException;
@@ -114,7 +115,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     userRole.setIdRole(role.getIdRole());
                     userRole.setCreatedTime(new Date());
                     userRoleService.save(userRole);
-                    // todo 向Lucene插入用户信息
                     UserIndexUtil.addIndex(UserLucene.builder()
                             .idUser(user.getId())
                             .nickname(user.getNickname())
@@ -259,10 +259,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // TODO::文件上传接口实现
         if(StringUtils.isNotBlank(user.getAvatarType()) && AVATAR_SVG_TYPE.equals(user.getAvatarType())) {
-
+            String avatarUrl = UploadController.uploadBase64File(user.getAvatarUrl(), 0);
+            user.setAvatarUrl(avatarUrl);
+            user.setAvatarType("0");
         }
-
-        return null;
+        User newUser = new User();
+        newUser.setId(user.getIdUser());
+        BeanUtils.copyProperties(user, newUser);
+        boolean result = updateById(newUser);
+        // 将用户信息加入到全文搜索中
+        UserIndexUtil.addIndex(UserLucene.builder()
+                    .idUser(user.getIdUser())
+                    .nickname(user.getNickname())
+                    .signature(user.getSignature())
+                    .build()
+        );
+        if(!result) {
+            throw new ServiceException("操作失败");
+        }
+        return user;
     }
 
     @Override
