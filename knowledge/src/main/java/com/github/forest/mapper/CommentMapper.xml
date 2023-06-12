@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.forest.entity.Comment">
+        <id column="id" property="idComment" />
+        <result column="comment_content" property="commentContent" />
+        <result column="comment_author_id" property="commentAuthorId" />
+        <result column="comment_article_id" property="commentArticleId" />
+        <result column="comment_sharp_url" property="commentSharpUrl" />
+        <result column="comment_original_comment_id" property="commentOriginalCommentId" />
+        <result column="comment_status" property="commentStatus" />
+        <result column="comment_ip" property="commentIp" />
+        <result column="comment_ua" property="commentUa" />
+        <result column="comment_anonymous" property="commentAnonymous" />
+        <result column="comment_reply_count" property="commentReplyCount" />
+        <result column="comment_visible" property="commentVisible" />
+        <result column="created_time" property="createdTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, comment_content, comment_author_id, comment_article_id, comment_sharp_url, comment_original_comment_id, comment_status, comment_ip, comment_ua, comment_anonymous, comment_reply_count, comment_visible, created_time
+    </sql>
+
+</mapper>

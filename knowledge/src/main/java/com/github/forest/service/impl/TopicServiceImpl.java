@@ -16,6 +16,7 @@ import com.github.forest.service.TopicService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.forest.service.TopicTagService;
 import com.github.forest.util.XssUtils;
+import com.github.forest.web.api.common.UploadController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +78,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
                 }
             }
             if(StringUtils.isNotBlank(topic.getTopicIconPath()) && topic.getTopicIconPath().contains("base64")) {
-                // todo::保存base64格式的图片信息
+                String topicIconPath = UploadController.uploadBase64File(topic.getTopicIconPath(), 3);
+                topic.setTopicIconPath(topicIconPath);
             } else {
                 topic.setTopicIconPath(topic.getTopicIconPath());
             }
@@ -91,9 +93,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         } else {
             // 更新
             if (StringUtils.isNotBlank(topic.getTopicIconPath()) && topic.getTopicIconPath().contains("base64")) {
-                // todo::保存base64格式的图片信息
-                // String topicIconPath = UploadController.uploadBase64File(topic.getTopicIconPath(), 3);
-//                topic.setTopicIconPath(topicIconPath);
+                String topicIconPath = UploadController.uploadBase64File(topic.getTopicIconPath(), 3);
+                topic.setTopicIconPath(topicIconPath);
             }
             topic.setUpdatedTime(new Date());
         }
@@ -126,6 +127,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TopicTagDTO unbindTopicTag(TopicTagDTO topicTag) throws ServiceException {
         LambdaQueryWrapper<TopicTag> topicTagLambdaQueryWrapper = new LambdaQueryWrapper<>();
         topicTagLambdaQueryWrapper.eq(true, TopicTag::getIdTopic, topicTag.getIdTopic());

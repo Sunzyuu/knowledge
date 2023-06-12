@@ -32,5 +32,4 @@ public interface TopicMapper extends BaseMapper<Topic> {
      */
     List<Tag> selectUnbindTagsById(@Param("idTopic") Long idTopic, @Param("tagTitle") String tagTitle);
 
-
 }

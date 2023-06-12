@@ -23,7 +23,7 @@
         <result column="bg_img_url" property="bgImgUrl" />
     </resultMap>
     <resultMap id="DTOResultMapper" type="com.github.forest.dto.UserDTO">
-        <result column="id" property="id"/>
+        <result column="id" property="idUser"/>
         <result column="account" property="account"/>
         <result column="nickname" property="nickname"/>
         <result column="avatar_type" property="avatarType"/>

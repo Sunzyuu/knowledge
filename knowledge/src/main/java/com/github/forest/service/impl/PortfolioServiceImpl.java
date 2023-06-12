@@ -45,8 +45,8 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
 
     @Override
     public List<PortfolioDTO> findUserPortfoliosByUser(UserDTO userDTO) {
-        List<PortfolioDTO> list = portfolioMapper.selectUserPortfoliosByIdUser(userDTO.getId());
-        Author author = userService.selectAuthor(userDTO.getId());
+        List<PortfolioDTO> list = portfolioMapper.selectUserPortfoliosByIdUser(userDTO.getIdUser());
+        Author author = userService.selectAuthor(userDTO.getIdUser());
         // 将作品信息绑定到作品集
         list.forEach(portfolioDTO -> {
             genPortfolioAuthor(portfolioDTO, author);
