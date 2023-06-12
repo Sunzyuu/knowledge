@@ -60,7 +60,7 @@ public class NotificationUtils {
 
     }
 
-    private static NotificationDTO genNotification(Notification notification) {
+    public static NotificationDTO genNotification(Notification notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
         BeanUtils.copyProperties(notification, notificationDTO);
         ArticleDTO article;

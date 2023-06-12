@@ -8,6 +8,7 @@ import com.github.forest.entity.Notification;
 import com.github.forest.mapper.NotificationMapper;
 import com.github.forest.service.NotificationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.forest.util.NotificationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +41,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     public List<NotificationDTO> findNotifications(Long idUser) {
         List<NotificationDTO> list = notificationMapper.selectNotifications(idUser);
         list.forEach(notification -> {
-            // todo::发送通知
-            NotificationDTO notificationDTO = new NotificationDTO();
+            NotificationDTO notificationDTO = NotificationUtils.genNotification(notification);
             // 判断关联数据是否已删除
             if(Objects.nonNull(notification.getAuthor())) {
                 BeanUtils.copyProperties(notification, notificationDTO);
@@ -57,15 +57,13 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 dto.setCreatedTime(notification.getCreatedTime());
                 BeanUtils.copyProperties(notification, notificationDTO);
             }
-
-
         });
         return list;
     }
 
     @Override
     public Notification findNotification(Long idUser, Long dataId, String dataType) {
-        return null;
+        return notificationMapper.selectNotification(idUser, dataId, dataType);
     }
 
     @Override
