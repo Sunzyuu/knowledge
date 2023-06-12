@@ -29,7 +29,7 @@ public class ArticleThumbsUp implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Long idArticleThumbsUp;
 
     /**
      * 文章表主键

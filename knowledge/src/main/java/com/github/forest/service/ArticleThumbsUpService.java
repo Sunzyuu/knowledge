@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ArticleThumbsUpService extends IService<ArticleThumbsUp> {
 
+    /**
+     * 点赞
+     *
+     * @param articleThumbsUp
+     * @return
+     */
+    int thumbsUp(ArticleThumbsUp articleThumbsUp);
 }
