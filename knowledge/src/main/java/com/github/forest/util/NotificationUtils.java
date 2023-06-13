@@ -4,6 +4,7 @@ import com.github.forest.core.constant.NotificationConstant;
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.Author;
 import com.github.forest.dto.NotificationDTO;
+import com.github.forest.entity.Comment;
 import com.github.forest.entity.Follow;
 import com.github.forest.entity.Notification;
 import com.github.forest.entity.User;
@@ -62,6 +63,8 @@ public class NotificationUtils {
         NotificationDTO notificationDTO = new NotificationDTO();
         BeanUtils.copyProperties(notification, notificationDTO);
         ArticleDTO article;
+        Follow follow;
+        Comment comment;
         User user;
         switch (notification.getDataType()) {
             case "0":
@@ -75,9 +78,30 @@ public class NotificationUtils {
                 }
                 break;
             case "1" :
-                // Todo::关注提醒
+                // 关注提醒
+                follow = followService.getById(notification.getDataId());
+                notificationDTO.setDataTitle("关注提醒");
+                if(Objects.nonNull(follow)) {
+                    user = userService.getById(follow.getFollowerId());
+                    notificationDTO.setDataUrl(getFollowLink(follow.getFollowingType(), user.getAccount()));
+                    notificationDTO.setAuthor(genAuthor(user));
+                }
+                break;
             case "2" :
-                // todo::回帖提醒
+                // 回帖提醒
+               comment = commentService.getById(notification.getDataId());
+               if(Objects.nonNull(comment)) {
+                   article = articleService.findArticleDTOById(comment.getCommentArticleId(), 0);
+                   if(Objects.nonNull(article)) {
+                       notificationDTO.setDataTitle(article.getArticleTitle());
+                       notificationDTO.setDataUrl(comment.getCommentSharpUrl());
+                       user = userService.getById(comment.getCommentAuthorId());
+                       notificationDTO.setAuthor(genAuthor(user));
+                   }
+                   break;
+               }
+            case "3":
+                // 关注用户发布文章
             case "4":
                 // 关注文章更新
                 article = articleService.findArticleDTOById(notification.getDataId(), 0);
@@ -92,6 +116,17 @@ public class NotificationUtils {
                 break;
         }
         return notificationDTO;
+    }
+
+    private static String getFollowLink(String followingType, String id) {
+        StringBuilder url = new StringBuilder();
+        url.append(Utils.getProperty("resource.domain"));
+        if("0".equals(followingType)) {
+            url.append("/user/").append(id);
+        } else {
+            url.append("/notification");
+        }
+        return url.toString();
     }
 
     private static Author genAuthor(User user) {

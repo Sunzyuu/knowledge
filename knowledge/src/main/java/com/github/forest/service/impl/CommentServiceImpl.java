@@ -5,6 +5,7 @@ import com.github.forest.dto.Author;
 import com.github.forest.dto.CommentDTO;
 import com.github.forest.entity.Article;
 import com.github.forest.entity.Comment;
+import com.github.forest.handler.event.CommentEvent;
 import com.github.forest.mapper.CommentMapper;
 import com.github.forest.service.ArticleService;
 import com.github.forest.service.CommentService;
@@ -39,7 +40,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private ArticleService articleService;
 
     @Resource
-    private ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher publisher;
 
     @Override
     public List<CommentDTO> getArticleComments(Integer idArticle) {
@@ -100,7 +101,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
         String commentContent = comment.getCommentContent();
         if(StringUtils.isNotBlank(commentContent)) {
-            // Todo::评论提醒
+            publisher.publishEvent(new CommentEvent(comment.getIdComment(), article.getArticleAuthorId(), comment.getCommentAuthorId(), commentContent, comment.getCommentOriginalCommentId()));
         }
         return comment;
     }
