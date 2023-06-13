@@ -4,12 +4,10 @@ import com.github.forest.core.constant.NotificationConstant;
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.Author;
 import com.github.forest.dto.NotificationDTO;
+import com.github.forest.entity.Follow;
 import com.github.forest.entity.Notification;
 import com.github.forest.entity.User;
-import com.github.forest.service.ArticleService;
-import com.github.forest.service.JavaMailService;
-import com.github.forest.service.NotificationService;
-import com.github.forest.service.UserService;
+import com.github.forest.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
@@ -26,10 +24,10 @@ public class NotificationUtils {
 
     private static final NotificationService notificationService = SpringContextHolder.getBean(NotificationService.class);
     private static final UserService userService = SpringContextHolder.getBean(UserService.class);
-//    private static final FollowService followService = SpringContextHolder.getBean(FollowService.class);
+    private static final FollowService followService = SpringContextHolder.getBean(FollowService.class);
     private static final JavaMailService mailService = SpringContextHolder.getBean(JavaMailService.class);
     private static final ArticleService articleService = SpringContextHolder.getBean(ArticleService.class);
-//    private static final CommentService commentService = SpringContextHolder.getBean(CommentService.class);
+    private static final CommentService commentService = SpringContextHolder.getBean(CommentService.class);
 
     public static void sendAnnouncement(Long dataId, String dataType, String dataSummary) {
         List<User> users = userService.list();
@@ -105,4 +103,21 @@ public class NotificationUtils {
     }
 
 
+    public static void sendArticlePush(Long dataId, String dataType, String dataSummary, Long articleAuthorId) {
+        List<Follow> follows;
+        if(NotificationConstant.PostArticle.equals(dataType)) {
+            // 关注 用户通知
+            follows = followService.findByFollowingId("0", articleAuthorId);
+        } else {
+            // 关注文章通知
+            follows = followService.findByFollowingId("3", articleAuthorId);
+        }
+        follows.forEach(follow -> {
+            try {
+                saveNotification(follow.getFollowerId(), dataId, dataType, dataSummary);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 }
