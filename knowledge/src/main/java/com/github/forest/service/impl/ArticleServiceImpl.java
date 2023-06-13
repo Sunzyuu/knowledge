@@ -12,6 +12,8 @@ import com.github.forest.entity.Article;
 import com.github.forest.entity.ArticleContent;
 import com.github.forest.entity.Tag;
 import com.github.forest.entity.User;
+import com.github.forest.handler.event.ArticleDeleteEvent;
+import com.github.forest.handler.event.ArticleEvent;
 import com.github.forest.mapper.ArticleMapper;
 import com.github.forest.service.ArticleContentService;
 import com.github.forest.service.ArticleService;
@@ -24,6 +26,7 @@ import com.github.forest.util.XssUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +60,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     private ArticleContentService articleContentService;
+
+    @Resource
+    private ApplicationEventPublisher publisher;
 
     @Value("${resource.domain}")
     private String domain;
@@ -118,7 +124,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     @Transactional(rollbackFor =  {UnsupportedEncodingException.class})
     public Long postArticle(ArticleDTO article, User user) throws UnsupportedEncodingException {
-        boolean isUpdated = false;
+        boolean isUpdate = false;
         String articleTitle = article.getArticleTitle();
         String articleTags = article.getArticleTags();
         String articleContent = article.getArticleContent();
@@ -149,7 +155,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             newArticle = getById(idArticle);
             // 如果文章之前状态为草稿 应视为新发布文章
             if (DEFAULT_STATUS.equals(article.getArticleStatus())) {
-                isUpdated = true;
+                isUpdate = true;
             }
             newArticle.setArticleTitle(articleTitle);
             newArticle.setArticleTags(articleTags);
@@ -180,7 +186,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         updateById(newArticle);
         // 插入标签信息
         tagService.saveTagArticle(newArticle, articleContentHtml, user.getId());
-        // todo:: 事件监听器
+
+        if(DEFAULT_STATUS.equals(newArticle.getArticleStatus())) {
+            publisher.publishEvent(new ArticleEvent(newArticleId, newArticle.getArticleTitle(), isUpdate, notification, user.getNickname(), newArticle.getArticleAuthorId()));
+        }
 
         return newArticleId;
     }
@@ -195,7 +204,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             // 删除文章
             boolean result = removeById(id);
             if(!result) {
-                // todo::事件监听器
+                // 事件监听器
+                publisher.publishEvent(new ArticleDeleteEvent(id));
             }
             return 1;
         } else {
