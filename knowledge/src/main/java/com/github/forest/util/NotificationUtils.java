@@ -40,7 +40,7 @@ public class NotificationUtils {
         });
     }
 
-    private static void saveNotification(Long idUser, Long dataId, String dataType, String dataSummary) throws MessagingException{
+    public static void saveNotification(Long idUser, Long dataId, String dataType, String dataSummary) throws MessagingException{
         Notification notification = notificationService.findNotification(idUser, dataId, dataType);
         if(notification == null || NotificationConstant.UpdateArticle.equals(dataType)) {
             log.info("------------------- 开始执行消息通知 ------------------");
