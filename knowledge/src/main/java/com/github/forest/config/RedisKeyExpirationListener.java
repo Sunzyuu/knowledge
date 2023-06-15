@@ -22,6 +22,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     @Resource
     private UserService userService;
 
+    @Autowired
     public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer) {
         super(listenerContainer);
     }
