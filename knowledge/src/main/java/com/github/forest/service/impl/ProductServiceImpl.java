@@ -1,10 +1,14 @@
 package com.github.forest.service.impl;
 
+import com.github.forest.dto.ProductDTO;
 import com.github.forest.entity.Product;
 import com.github.forest.mapper.ProductMapper;
 import com.github.forest.service.ProductService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
+    @Resource
+    private ProductMapper productMapper;
+
+    @Override
+    public List<ProductDTO> findProducts() {
+        return productMapper.selectProducts();
+    }
+
+    @Override
+    public ProductDTO findProductDTOById(Integer idProduct, Integer type) {
+        return productMapper.selectProductDTOById(idProduct, type);
+    }
 }

@@ -29,7 +29,7 @@ public class Product implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Integer idProduct;
 
     /**
      * 产品名

@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.github.forest.entity.Product">
-        <id column="id" property="id" />
+        <id column="id" property="idProduct" />
         <result column="product_title" property="productTitle" />
         <result column="product_price" property="productPrice" />
         <result column="product_img_url" property="productImgUrl" />
@@ -18,5 +18,23 @@
     <sql id="Base_Column_List">
         id, product_title, product_price, product_img_url, product_description, weights, created_time, updated_time
     </sql>
+    <select id="selectProducts" resultMap="BaseResultMap">
+        select *
+        from forest_product
+        order by weights
+    </select>
+    <select id="selectProductDTOById" resultMap="BaseResultMap">
+        select id, product_title,
+        <choose>
+            <when test="type == 1">
+                product_content_html as product_content,
+            </when>
+            <otherwise>
+                product_content,
+            </otherwise>
+        </choose>
+        product_img_url from forest_product fp join forest_product_content fpc on fp.id = fpc.id_product
+        where id = #{idProduct}
+    </select>
 
 </mapper>
