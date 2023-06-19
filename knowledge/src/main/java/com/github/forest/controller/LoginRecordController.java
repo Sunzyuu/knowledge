@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author sunzy
- * @since 2023-06-17
+ * @since 2023-06-19
  */
 @RestController
 @RequestMapping("/login-record")
