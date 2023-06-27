@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.forest.mapper.DashboardMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="DashboardDataResultMap" type="com.github.forest.dto.admin.DashboardData">
+        <result column="label" property="label"></result>
+        <result column="value" property="value"></result>
+    </resultMap>
+    <resultMap id="UserInfoResultMapper" type="com.github.forest.dto.UserInfoDTO">
+        <result column="id" property="idUser"/>
+        <result column="account" property="account"/>
+        <result column="nickname" property="nickname"/>
+        <result column="sex" property="sex"/>
+        <result column="avatar_type" property="avatarType"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="status" property="status"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="last_online_time" property="lastOnlineTime"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="signature" property="signature"/>
+    </resultMap>
+
+
+    <select id="selectUserCount" resultType="java.lang.Integer">
+        select count(*) from forest_user
+    </select>
+    <select id="selectNewUserCount" resultType="java.lang.Integer">
+        select  count(*) from forest_user
+        where created_time > str_to_date(date_format(sysdate(), '%Y-%m-%d'), '%Y-%m-%d')
+    </select>
+    <select id="selectArticleCount" resultType="java.lang.Integer">
+        select count(*) from forest_article where article_status = 0
+    </select>
+
+</mapper>
