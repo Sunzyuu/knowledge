@@ -1,4 +1,4 @@
-package com.github.forest.service.impl;
+package com.github.forest.service;
 
 import com.github.forest.dto.ArticleDTO;
 import com.github.forest.dto.UserInfoDTO;
