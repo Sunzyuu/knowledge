@@ -44,6 +44,7 @@ public class SseServiceImpl implements SseService {
             removeUser(idUser);
         });
         addUser(idUser, sseEmitter);
+        log.info("type: SseSession Connect, session Id : {}", idUser);
         return sseEmitter;
     }
 
@@ -118,5 +119,6 @@ public class SseServiceImpl implements SseService {
      */
     private void sendMessage(Long idUser, String content) throws IOException {
         sessionMap.get(idUser).send(content);
+        log.info("send to {} : {}", idUser, content);
     }
 }

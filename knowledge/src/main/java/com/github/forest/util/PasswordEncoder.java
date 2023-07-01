@@ -33,4 +33,9 @@ public class PasswordEncoder {
         // 比较
         return encodedPassword.equals(encode(rawPassword, salt));
     }
+
+    public static void main(String[] args) {
+        String encode = encode("123456");
+        System.out.println(encode);
+    }
 }
