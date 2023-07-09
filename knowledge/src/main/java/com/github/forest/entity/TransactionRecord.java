@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -63,7 +65,7 @@ public class TransactionRecord implements Serializable {
     /**
      * 交易时间
      */
-    private LocalDateTime transactionTime;
+    private Date transactionTime;
 
 
 }
