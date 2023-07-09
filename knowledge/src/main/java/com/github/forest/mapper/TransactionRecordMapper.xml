@@ -19,4 +19,41 @@
         id, transaction_no, funds, form_bank_account, to_bank_account, money, transaction_type, transaction_time
     </sql>
 
+
+    <update id="debit">
+        update forest_bank_account
+        set account_balance = account_balance - #{money}
+        where bank_account = #{formBankAccount} and account_balance >= #{money}
+    </update>
+
+    <update id="credit">
+        update forest_bank_account
+        set account_balance = account_balance + #{money}
+        where bank_account = #{toBankAccount}
+    </update>
+
+    <select id="selectTransactionRecords" resultMap="BaseResultMap">
+        select *
+        from forest_transaction_record ftr
+        where (form_bank_account = #{bankAccount} or to_bank_account = #{bankAccount})
+          and transaction_time between str_to_date(#{startDate}, '%Y-%m-%d') and str_to_date(#{endDate}, '%Y-%m-%d') + interval 1 day
+        order by transaction_time desc
+    </select>
+    <select id="existsWithBankAccountAndFunds" resultType="java.lang.Boolean">
+        select ifnull((select false
+                       from forest_transaction_record
+                       where to_bank_account = #{bankAccount}
+                         and funds = #{funds}
+                         and transaction_time > str_to_date(date_format(sysdate(), '%Y-%m-%d'), '%Y-%m-%d')
+                       limit 1), true)
+    </select>
+    <select id="existsWithNewbieRewards" resultType="java.lang.Boolean">
+        select ifnull((select true
+                       from forest_transaction_record
+                       where to_bank_account = #{bankAccount} and funds = '新手奖励'
+                       limit 1), false)
+    </select>
+
+
+
 </mapper>
