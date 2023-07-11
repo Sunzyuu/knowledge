@@ -1,6 +1,7 @@
 package com.github.forest.web.api.bank;
 
 import com.github.forest.core.result.GlobalResult;
+import com.github.forest.core.result.GlobalResultGenerator;
 import com.github.forest.dto.BankDTO;
 import com.github.forest.service.BankService;
 import com.github.pagehelper.PageHelper;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author sunzy
@@ -26,5 +28,8 @@ public class BankController {
     @GetMapping("/list")
     public GlobalResult<PageInfo<BankDTO>> banks(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer rows) {
         PageHelper.startPage(page, rows);
+        List<BankDTO> banks = bankService.findBanks();
+        PageInfo<BankDTO> pageInfo = new PageInfo<>(banks);
+        return GlobalResultGenerator.genSuccessResult(pageInfo);
     }
 }
