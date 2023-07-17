@@ -20,8 +20,8 @@ public class CodeGenerator {
     private static final String DATA_SOURCE_USER_NAME  = "root";
     private static final String DATA_SOURCE_PASSWORD  = "root";
     private static final String[] TABLE_NAMES = new String[]{
-        "forest_bank",
-        "forest_bank_account"
+        "forest_sponsor",
+        "forest_transaction_record"
 
     };
 

@@ -19,10 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * shiro认证拦截器
  * @author sunzy
  * @date 2023/6/16 10:06
  */
-@Configuration
+//@Configuration
 public class ShiroConfig {
 
     @Bean

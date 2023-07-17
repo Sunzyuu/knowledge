@@ -1,6 +1,7 @@
 package com.github.forest.openai;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.forest.core.result.GlobalResult;
 import com.github.forest.core.result.GlobalResultGenerator;
@@ -14,10 +15,7 @@ import com.theokanning.openai.completion.chat.ChatMessage;
 import okhttp3.OkHttpClient;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import retrofit2.Retrofit;
 
 import javax.annotation.Resource;
@@ -39,11 +37,12 @@ public class OpenAiController {
     @Resource
     private SseService sseService;
 
-    @Value("${openai.token}")
-    private String token;
+//    @Value("${openai.token}")
+    private String token = "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";
 
     @PostMapping("/chat")
     public GlobalResult chat(@RequestBody JSONObject jsonObject) {
+//        sseService.connect(9l);
         ObjectMapper mapper = defaultObjectMapper();
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 7890));
         OkHttpClient client =  defaultClient(token,Duration.ofSeconds(10000))
@@ -75,8 +74,14 @@ public class OpenAiController {
                     System.out.print(text);
                     sseService.send(user.getId(), text);
                 });
-        service.shutdownExecutor();
+//        service.shutdownExecutor();
         return GlobalResultGenerator.genSuccessResult();
     }
 
+
+    @GetMapping("/send")
+    public String sendMessage() {
+        sseService.send(9l, "hello world!");
+        return "success";
+    }
 }
